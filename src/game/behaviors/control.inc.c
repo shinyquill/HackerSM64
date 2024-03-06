@@ -5,7 +5,7 @@ void bhv_control_loop(void) {
     print_text_fmt_int(20, (SCREEN_HEIGHT - 64), "m.vel2 %d",(s16)gMarioState->vel[2]);
     print_text_fmt_int(20, (SCREEN_HEIGHT - 80), "PosY %d", (s16)gMarioState->floor->type == SURFACE_ANTI_GRAVITY);
     if (gPlayer1Controller->buttonPressed & (L_TRIG)){
-        vec3f_copy_with_gravity_switch(gMarioState->pos, gMarioState->marioObj->header.gfx.pos);
+        // vec3f_copy_with_gravity_switch(gMarioState->pos, gMarioState->marioObj->header.gfx.pos);
         print_text_fmt_int(20, (SCREEN_HEIGHT - 96), "pressed L");
     }
     //
