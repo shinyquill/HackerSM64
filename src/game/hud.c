@@ -576,7 +576,7 @@ void render_hud(void) {
             render_hud_mario_lives();
         }
 #endif
-
+      
         if (hudDisplayFlags & HUD_DISPLAY_FLAG_COIN_COUNT) {
             render_hud_coins();
         }

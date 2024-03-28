@@ -73,4 +73,5 @@ void bhv_jet_stream_loop(void) {
     }
 
     cur_obj_play_sound_1(SOUND_ENV_WATER);
+
 }

@@ -147,15 +147,15 @@ static void toad_message_talking(void) {
 }
 
 static void toad_message_opacifying(void) {
-    if ((o->oOpacity += 6) == 255) {
+    // if ((o->oOpacity += 6) == 255) {
         o->oToadMessageState = TOAD_MESSAGE_OPAQUE;
-    }
+    // }
 }
 
 static void toad_message_fading(void) {
-    if ((o->oOpacity -= 6) == 81) {
+    // if ((o->oOpacity -= 6) == 81) {
         o->oToadMessageState = TOAD_MESSAGE_FADED;
-    }
+    // }
 }
 
 void bhv_toad_message_loop(void) {

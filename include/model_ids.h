@@ -539,7 +539,6 @@
 #define MODEL_METAL_BOX_DL                0xDA        // metal_box_dl
 #define MODEL_NUMBER                      0xDB        // number_geo
 #define MODEL_FLYGUY                      0xDC        // shyguy_geo
-#define MODEL_TOAD                        0xDD        // toad_geo
 #define MODEL_PEACH                       0xDE        // peach_geo
 #define MODEL_CHUCKYA                     0xDF        // chuckya_geo
 #define MODEL_WHITE_PUFF                  0xE0        // white_puff_geo
@@ -549,6 +548,10 @@
 #define MODEL_SILVER_COIN                 0xE2        // silver_coin_geo
 #define MODEL_SILVER_COIN_NO_SHADOW       0xE3        // silver_coin_no_shadow_geo
 #endif
+#define MODEL_MUSHROOM_TOP       0xE2        // silver_coin_no_shadow_geo
+#define MODEL_TRUNK              0xE3        // silver_coin_no_shadow_geo
+#define MODEL_TOAD                        0xE4        // toad_geo
+#define MODEL_FLYING_BOOST                        0xE5        // toad_geo
 
 // Menu Models (overwrites Level Geometry IDs)
 #define MODEL_MAIN_MENU_MARIO_SAVE_BUTTON         MODEL_LEVEL_GEOMETRY_03   // main_menu_geo_0001D0

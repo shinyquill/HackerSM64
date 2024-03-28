@@ -30,3 +30,16 @@
 #include "src/s2d_engine/s2d_config.h"
 #include FONT_C_FILE
 #endif
+
+#include "mushroom_top/model.inc.c"
+#include "mushroom_top/collision.inc.c"
+#include "trunk/collision.inc.c"
+#include "trunk/model.inc.c"
+#include "toad/model.inc.c"
+#include "toad/anims/data.inc.c"
+#include "toad/anims/table.inc.c"
+#include "luiginpc/model.inc.c"
+#include "luiginpc/anims/data.inc.c"
+#include "luiginpc/anims/table.inc.c"
+#include "flying_boost/model.inc.c"
+#include "flying_boost/collision.inc.c"

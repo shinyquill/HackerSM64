@@ -16,3 +16,9 @@
 #include "water_splash/geo.inc.c"
 #include "sparkle_animation/geo.inc.c"
 #include "mario/geo.inc.c"
+
+#include "mushroom_top/geo.inc.c"
+#include "trunk/geo.inc.c"
+#include "toad/geo.inc.c"
+#include "luiginpc/geo.inc.c"
+#include "flying_boost/geo.inc.c"

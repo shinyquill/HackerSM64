@@ -331,4 +331,26 @@ extern const Gfx white_particle_small_dl_end[];
 extern const Gfx white_particle_small_dl[];
 extern const Gfx white_particle_small_unused_dl[];
 
+#include "mushroom_top/geo_header.h"
+
+#include "mushroom_top/collision_header.h"
+
+#include "trunk/collision_header.h"
+
+#include "trunk/geo_header.h"
+
+#include "mario/geo_header.h"
+
+// toad
+#include "toad/geo_header.h"
+extern const struct Animation *const toad_seg6_anims_0600FB58[];
+
+#include "luiginpc/geo_header.h"
+
+
+#include "luiginpc/anim_header.h"
+#include "flying_boost/geo_header.h"
+
+#include "flying_boost/collision_header.h"
+
 #endif

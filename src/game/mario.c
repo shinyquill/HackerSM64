@@ -1428,7 +1428,7 @@ void update_mario_health(struct MarioState *m) {
         if (((u32) m->healCounter | (u32) m->hurtCounter) == 0) {
             if ((m->input & INPUT_IN_POISON_GAS) && !(m->action & ACT_FLAG_INTANGIBLE)) {
                 if (!(m->flags & MARIO_METAL_CAP) && !gDebugLevelSelect) {
-                    m->health -= 4;
+                    // m->health -= 4;
                 }
             } else {
                 if ((m->action & ACT_FLAG_SWIMMING) && !(m->action & ACT_FLAG_INTANGIBLE)) {
@@ -1436,7 +1436,7 @@ void update_mario_health(struct MarioState *m) {
 #ifdef BREATH_METER
                     // when in snow terrains lose 3 health.
                     if ((m->pos[1] < (m->waterLevel - 140)) && terrainIsSnow) {
-                        m->health -= 3;
+                        // m->health -= 3;
                     }
 #else
                     // When Mario is near the water surface, recover health (unless in snow),
@@ -1445,7 +1445,7 @@ void update_mario_health(struct MarioState *m) {
                     if ((m->pos[1] >= (m->waterLevel - 140)) && !terrainIsSnow) {
                         m->health += 0x1A;
                     } else if (!gDebugLevelSelect) {
-                        m->health -= (terrainIsSnow ? 3 : 1);
+                        // m->health -= (terrainIsSnow ? 3 : 1);
                     }
 #endif
                 }
@@ -1827,6 +1827,7 @@ void init_mario(void) {
     gMarioState->heldObj = NULL;
     gMarioState->riddenObj = NULL;
     gMarioState->usedObj = NULL;
+    gMarioState->falling = FALSE;
 
     gMarioState->waterLevel = find_water_level(gMarioSpawnInfo->startPos[0], gMarioSpawnInfo->startPos[2]);
 

@@ -63,12 +63,12 @@ enum SurfaceTypes {
     SURFACE_HARD_VERY_SLIPPERY,         // 0x0036 // Hard and very slippery (Always has fall damage)
     SURFACE_HARD_NOT_SLIPPERY,          // 0x0037 // Hard and Non-slippery (Always has fall damage)
     SURFACE_VERTICAL_WIND,              // 0x0038 // Death at bottom with vertical wind. Warps to ID of force parameter's second byte if set, otherwise warps to 0xF3 if it exists, otherwise defaults to ID 0xF1.
-    SURFACE_0039,                       // 0x0039 // Unused
-    SURFACE_003A,                       // 0x003A // Unused
-    SURFACE_003B,                       // 0x003B // Unused
-    SURFACE_003C,                       // 0x003C // Unused
-    SURFACE_003D,                       // 0x003D // Unused
-    SURFACE_003E,                       // 0x003E // Unused
+    SURFACE_CHECKPOINT_1,               // 0x0039 // Unused
+    SURFACE_CHECKPOINT_2,               // 0x003A // Unused
+    SURFACE_CHECKPOINT_3,               // 0x003B // Unused
+    SURFACE_CHECKPOINT_4,               // 0x003C // Unused
+    SURFACE_CHECKPOINT_5,               // 0x003D // Unused
+    SURFACE_BOOST,                       // 0x003E // Unused
     SURFACE_003F,                       // 0x003F // Unused
     SURFACE_BOSS_FIGHT_CAMERA = 0x65,   // 0x0065 // Wide camera for BoB and WF bosses
     SURFACE_CAMERA_FREE_ROAM,           // 0x0066 // Free roam camera for THI and TTC
@@ -93,7 +93,7 @@ enum SurfaceTypes {
     SURFACE_NO_CAM_COL_SLIPPERY,        // 0x0079 // Surface with no cam collision flag, slippery with noise (CCM, PSS and TTM slides)
     SURFACE_SWITCH,                     // 0x007A // Surface with no cam collision flag, non-slippery with noise, used by switches and Dorrie
     SURFACE_VANISH_CAP_WALLS,           // 0x007B // Vanish cap walls, pass through them with Vanish Cap
-    SURFACE_007C,                       // 0x007C // Unused
+    SURFACE_BOUNCE,                       // 0x007C // Unused
     SURFACE_007D,                       // 0x007D // Unused
     SURFACE_007E,                       // 0x007E // Unused
     SURFACE_007F,                       // 0x007F // Unused

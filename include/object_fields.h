@@ -1257,7 +1257,6 @@
 
 
 /*Custom general defines:
-
 For general s32 ints, use o->oF4, oF8, oFC, o100, o104, o108, o10C, and o110
 
 For floats, apply the prefix "oFloat" before the index. For object pointers, apply "oObj", and for surface pointers, apply "oSurf"
@@ -1282,6 +1281,11 @@ os1610C
 os1610E
 os16110
 os16112*/
+#define /*0x0F4*/ oMushroomForce OBJECT_FIELD_S32(0x1B)
+#define /*0x0F4*/ oMushroomAnimate OBJECT_FIELD_S32(0x1C)
+#define /*0x0F4*/ oMushroomSize OBJECT_FIELD_S32(0x1D)
+
+#define /*0x0F4*/ oLuigiBlinkTimer OBJECT_FIELD_S32(0x1B)
 
 #define /*0x0F4*/ oF4                                           OBJECT_FIELD_S32(0x1B)
 #define /*0x0F8*/ oF8                                           OBJECT_FIELD_S32(0x1C)

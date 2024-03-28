@@ -28,7 +28,8 @@ enum WarpOperation {
     WARP_OP_DEMO_NEXT,
     WARP_OP_CREDITS_START,
     WARP_OP_CREDITS_NEXT,
-    WARP_OP_DEMO_END
+    WARP_OP_DEMO_END,
+    WARP_OP_FINISH
 };
 
 enum SpecialWarpDestinations {
@@ -167,7 +168,8 @@ enum WarpNodes {
     WARP_NODE_CREDITS_MIN   = 0xF8,
     WARP_NODE_CREDITS_START = 0xF8,
     WARP_NODE_CREDITS_NEXT  = 0xF9,
-    WARP_NODE_CREDITS_END   = 0xFA
+    WARP_NODE_CREDITS_END   = 0xFA,
+    WARP_NODE_FINISH_LINE   = 0xFF,
 };
 
 u16 level_control_timer(s32 timerOp);

@@ -13,3 +13,15 @@ void bhv_control_loop(void) {
     // print_text_fmt_int(20, (SCREEN_HEIGHT - 128), "wTimer %d", (s16)sTimerWeapon);
     // print_text_fmt_int(20, (SCREEN_HEIGHT - 144), "oTimer %d", (s16)o->oTimer);
     }
+
+void bhv_rotating_trunk_loop(void) {
+        o->oFaceAngleRoll += 0x050;
+    }
+
+void bhv_flying_init(void) {
+        o->oFaceAngleRoll += 0x050;
+    }
+
+void bhv_flying_loop(void) {
+        o->oFaceAngleRoll += 0x050;
+    }

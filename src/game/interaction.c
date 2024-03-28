@@ -112,7 +112,9 @@ static u32 sBackwardKnockbackActions[][3] = {
 
 static u8 sDisplayingDoorText = FALSE;
 static u8 sJustTeleported = FALSE;
-static u8 sPssSlideStarted = FALSE;
+static u8 sFirstSlideStarted = FALSE;
+static u8 sSecondSlideStarted = FALSE;
+static u8 sThirdSlideStarted = FALSE;
 
 /**
  * Returns the type of cap Mario is wearing.
@@ -683,9 +685,9 @@ u32 take_damage_from_interact_object(struct MarioState *m) {
         damage += (damage + 1) / 2;
     }
 
-    if (m->flags & MARIO_METAL_CAP) {
-        damage = 0;
-    }
+    // if (m->flags & MARIO_METAL_CAP) {
+    //     damage = 0;
+    // }
 
     m->hurtCounter += 4 * damage;
 
@@ -1859,10 +1861,14 @@ void mario_process_interactions(struct MarioState *m) {
 }
 
 void check_death_barrier(struct MarioState *m) {
-    if (m->pos[1] < m->floorHeight + 3072.0f) {
+    if (m->pos[1] < m->floorHeight + 2000.0f) {
+        m->falling = TRUE;
         start_cutscene(gCurrentArea->camera, CUTSCENE_FALLING);
+    } else {
+        m->falling = FALSE;
     }
-    if (m->pos[1] < m->floorHeight + 2048.0f) {
+    
+    if (m->pos[1] < m->floorHeight + 1536.0f) {
         if (level_trigger_warp(m, WARP_OP_WARP_FLOOR) == 20 && !(m->flags & MARIO_FALL_SOUND_PLAYED)) {
             play_sound(SOUND_MARIO_WAAAOOOW, m->marioObj->header.gfx.cameraToObject);
         }
@@ -1880,24 +1886,81 @@ void check_lava_boost(struct MarioState *m) {
     }
 }
 
-void pss_begin_slide(UNUSED struct MarioState *m) {
-    if (!(gHudDisplay.flags & HUD_DISPLAY_FLAG_TIMER)) {
-        level_control_timer(TIMER_CONTROL_SHOW);
-        level_control_timer(TIMER_CONTROL_START);
-        sPssSlideStarted = TRUE;
+void check_bounce(struct MarioState *m) {
+    if (!(m->action & ACT_FLAG_RIDING_SHELL) && m->pos[1] < m->floorHeight) {
+        m->particleFlags |= PARTICLE_HORIZONTAL_STAR;
+        update_mario_sound_and_camera(m);
+        drop_and_set_mario_action(m, ACT_MUSH_BOUNCE, 0);
     }
 }
 
-void pss_end_slide(struct MarioState *m) {
-    //! This flag isn't set on death or level entry, allowing double star spawn
-    if (sPssSlideStarted) {
-        u16 slideTime = level_control_timer(TIMER_CONTROL_STOP);
-        if (slideTime < 630) {
-            m->marioObj->oBehParams = (1 << 24);
-            spawn_default_star(-6358.0f, -4300.0f, 4700.0f);
+void pss_begin_slide(UNUSED struct MarioState *m) {
+    switch(gCurrLevelNum){
+        case LEVEL_BOB:{
+            if (!(gHudDisplay.flags & HUD_DISPLAY_FLAG_TIMER)) {
+                level_control_timer(TIMER_CONTROL_SHOW);
+                level_control_timer(TIMER_CONTROL_START);
+                sFirstSlideStarted = TRUE;
+            }
+            break;
         }
-        sPssSlideStarted = FALSE;
+        case LEVEL_WF:{
+            if (!(gHudDisplay.flags & HUD_DISPLAY_FLAG_TIMER)) {
+                level_control_timer(TIMER_CONTROL_SHOW);
+                level_control_timer(TIMER_CONTROL_START);
+                sSecondSlideStarted = TRUE;
+            }
+            break;
+        }
     }
+}
+
+void start_flying(struct MarioState *m) {
+    m->flags |= MARIO_WING_CAP | MARIO_CAP_ON_HEAD;
+    set_mario_action(m, ACT_BOOST_FLYING, 0);
+    // mario_set_forward_vel(m, m->forwardVel);
+
+    // play_sound_if_no_flag(m, SOUND_MARIO_YAHOO, MARIO_MARIO_SOUND_PLAYED);
+    // set_mario_animation(m, MARIO_ANIM_AIRBORNE_ON_STOMACH);
+    // m->faceAngle[0] = atan2s(m->forwardVel, m->vel[1]);
+    // m->marioObj->header.gfx.angle[0] = -m->faceAngle[0];
+    // if ((m->flags & MARIO_WING_CAP) && m->vel[1] < 0.0f) {
+    //     set_mario_action(m, ACT_FLYING, 0);
+    // }
+}
+
+void pss_end_slide(struct MarioState *m) {
+    gWarpCheckpoint.courseNum = COURSE_NONE;
+    gWarpCheckpoint.warpNode = 0x00;
+    gWarpCheckpoint.areaNum = 0;
+    //! This flag isn't set on death or level entry, allowing double star spawn
+    switch(gCurrLevelNum){
+        case LEVEL_BOB:{
+            if (sFirstSlideStarted) {
+                u16 slideTime = level_control_timer(TIMER_CONTROL_STOP);
+                // if (slideTime < 630) {
+                //     m->marioObj->oBehParams = (1 << 24);
+                //     spawn_default_star(-6358.0f, -4300.0f, 4700.0f);
+                // }
+                sFirstSlideStarted = FALSE;
+                level_trigger_warp(gMarioState, WARP_OP_FINISH);
+            }
+            break;
+        }
+        case LEVEL_WF:{
+            if (sSecondSlideStarted) {
+                u16 slideTime = level_control_timer(TIMER_CONTROL_STOP);
+                // if (slideTime < 630) {
+                //     m->marioObj->oBehParams = (1 << 24);
+                //     spawn_default_star(-6358.0f, -4300.0f, 4700.0f);
+                // }
+                sSecondSlideStarted = FALSE;
+                level_trigger_warp(gMarioState, WARP_OP_FINISH);
+            }
+            break;
+        }
+    }
+
 }
 
 void mario_handle_special_floors(struct MarioState *m) {
@@ -1922,14 +1985,49 @@ void mario_handle_special_floors(struct MarioState *m) {
                 pss_begin_slide(m);
                 break;
 
+            case SURFACE_BOOST:
+                if (m->action != ACT_BOOST_FLYING){
+                    start_flying(m);
+                }
+                break;
+
             case SURFACE_TIMER_END:
                 pss_end_slide(m);
+                break;
+
+            case SURFACE_CHECKPOINT_1:
+                gWarpCheckpoint.courseNum = gCurrCourseNum;
+                gWarpCheckpoint.warpNode = 0xC1;
+                gWarpCheckpoint.areaNum = 1;
+                break;
+            case SURFACE_CHECKPOINT_2:
+                gWarpCheckpoint.courseNum = gCurrCourseNum;
+                gWarpCheckpoint.warpNode = 0xC2;
+                gWarpCheckpoint.areaNum = 1;
+                break;
+            case SURFACE_CHECKPOINT_3:
+                gWarpCheckpoint.courseNum = gCurrCourseNum;
+                gWarpCheckpoint.warpNode = 0xC3;
+                gWarpCheckpoint.areaNum = 1;
+                break;
+            case SURFACE_CHECKPOINT_4:
+                gWarpCheckpoint.courseNum = gCurrCourseNum;
+                gWarpCheckpoint.warpNode = 0xC4;
+                gWarpCheckpoint.areaNum = 1;
+                break;
+            case SURFACE_CHECKPOINT_5:
+                gWarpCheckpoint.courseNum = gCurrCourseNum;
+                gWarpCheckpoint.warpNode = 0xC5;
+                gWarpCheckpoint.areaNum = 1;
                 break;
         }
 
         if (!(m->action & (ACT_FLAG_AIR | ACT_FLAG_SWIMMING))) {
             if (floorType == SURFACE_BURNING) {
                 check_lava_boost(m);
+            }
+            if (floorType == SURFACE_BOUNCE) {
+                check_bounce(m);
             }
         }
     }

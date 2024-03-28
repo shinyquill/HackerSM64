@@ -764,7 +764,11 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
                             sSourceWarpNodeId = WARP_NODE_DEATH;
                         }
 #else
-                        sSourceWarpNodeId = WARP_NODE_DEATH;
+                        if (gWarpCheckpoint.courseNum != COURSE_NONE && gWarpCheckpoint.courseNum == gCurrCourseNum){
+                            sSourceWarpNodeId = gWarpCheckpoint.warpNode;
+                        } else {
+                            sSourceWarpNodeId = WARP_NODE_DEATH;
+                        }
 #endif
                     }                    
                 }
@@ -804,6 +808,13 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
             case WARP_OP_WARP_OBJECT:
                 sDelayedWarpTimer = 20;
                 sSourceWarpNodeId = GET_BPARAM2(m->usedObj->oBehParams);
+                fadeMusic = !music_unchanged_through_warp(sSourceWarpNodeId);
+                play_transition(WARP_TRANSITION_FADE_INTO_STAR, sDelayedWarpTimer, 0x00, 0x00, 0x00);
+                break;
+
+            case WARP_OP_FINISH:
+                sDelayedWarpTimer = 20;
+                sSourceWarpNodeId = WARP_NODE_FINISH_LINE;
                 fadeMusic = !music_unchanged_through_warp(sSourceWarpNodeId);
                 play_transition(WARP_TRANSITION_FADE_INTO_STAR, sDelayedWarpTimer, 0x00, 0x00, 0x00);
                 break;
@@ -1352,8 +1363,12 @@ s32 lvl_set_current_level(UNUSED s16 initOrUpdate, s32 levelNum) {
     sWarpCheckpointActive = FALSE;
     gCurrLevelNum = levelNum;
     gCurrCourseNum = gLevelToCourseNumTable[levelNum - 1];
+	if (gCurrLevelNum == LEVEL_JRB) return 0;
+	if (gCurrLevelNum == LEVEL_WF) return 0;
+	if (gCurrLevelNum == LEVEL_CASTLE_COURTYARD) return 0;
 	if (gCurrLevelNum == LEVEL_BOB) return 0;
-
+	if (gCurrLevelNum == LEVEL_CASTLE_GROUNDS) return 0;
+	
     if (gCurrDemoInput != NULL || gCurrCreditsEntry != NULL || gCurrCourseNum == COURSE_NONE) {
         return FALSE;
     }
