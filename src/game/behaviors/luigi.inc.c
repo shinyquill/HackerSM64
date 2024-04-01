@@ -4,7 +4,6 @@ void bhv_luigi_init(void) {
 }
 
 void bhv_luigi_loop(void) {
-    print_text_fmt_int(20, (SCREEN_HEIGHT - 96),"BUF %d", (s16) o->oAction);
     switch (o->oAction){
         case 0: 
             luigi_act_idle();

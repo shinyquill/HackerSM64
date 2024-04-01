@@ -201,6 +201,7 @@
 #define TEXT_FILE_MARIO_B _("MARIO B")
 #define TEXT_FILE_MARIO_C _("MARIO C")
 #define TEXT_FILE_MARIO_D _("MARIO D")
+#define TEXT_OPTIONS _("OPTIONS")
 
 // Menu Options
 #define TEXT_SCORE _("SCORE")

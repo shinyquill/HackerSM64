@@ -348,7 +348,6 @@
 // group 6
 #define MODEL_DL_MONTY_MOLE_HOLE          0x54        // monty_mole_hole_seg5_dl_05000840
 #define MODEL_MONTY_MOLE                  0x55        // monty_mole_geo
-#define MODEL_UKIKI                       0x56        // ukiki_geo
 #define MODEL_FWOOSH                      0x57        // fwoosh_geo
 
 // group 7
@@ -552,6 +551,13 @@
 #define MODEL_TRUNK              0xE3        // silver_coin_no_shadow_geo
 #define MODEL_TOAD                        0xE4        // toad_geo
 #define MODEL_FLYING_BOOST                        0xE5        // toad_geo
+#define MODEL_BANANA                        0xE5        // toad_geo
+#define MODEL_UKIKI                       0xE6       // ukiki_geo
+#define MODEL_ROCK                        0xE7        // toad_geo
+#define MODEL_SEESAW                        0xE8        // toad_geo
+#define MODEL_SEESAW2                        0xE9        // toad_geo
+#define MODEL_ELEVATOR                        0xEA        // toad_geo
+#define MODEL_HUB                         0xEB        // invisible_bowser_accessory_geo
 
 // Menu Models (overwrites Level Geometry IDs)
 #define MODEL_MAIN_MENU_MARIO_SAVE_BUTTON         MODEL_LEVEL_GEOMETRY_03   // main_menu_geo_0001D0

@@ -1,0 +1,14 @@
+extern const GeoLayout elevator_geo[];
+extern u8 elevator_DONKEY_KONG_64_1C08D563_2_0_3BC80373_ciByRGBA_ci4[];
+extern u8 elevator_DONKEY_KONG_64_1C08D563_2_0_3BC80373_ciByRGBA_pal_rgba16[];
+extern u8 elevator_DONKEY_KONG_64_47C80E2B_0_2_all_ci8[];
+extern u8 elevator_DONKEY_KONG_64_47C80E2B_0_2_all_pal_rgba16[];
+extern Vtx elevator_000_displaylist_mesh_layer_1_vtx_0[8];
+extern Gfx elevator_000_displaylist_mesh_layer_1_tri_0[];
+extern Vtx elevator_000_displaylist_mesh_layer_1_vtx_1[38];
+extern Gfx elevator_000_displaylist_mesh_layer_1_tri_1[];
+extern Gfx mat_elevator_f3dlite_material_049[];
+extern Gfx mat_revert_elevator_f3dlite_material_049[];
+extern Gfx mat_elevator_f3dlite_material_053[];
+extern Gfx mat_revert_elevator_f3dlite_material_053[];
+extern Gfx elevator_000_displaylist_mesh_layer_1[];

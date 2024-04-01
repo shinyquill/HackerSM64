@@ -16,7 +16,7 @@ extern const GeoLayout geo_menu_sound_button[];
 extern const GeoLayout geo_menu_generic_button[];
 extern const GeoLayout geo_menu_file_select_strings_and_menu_cursor[];
 extern const GeoLayout geo_menu_act_selector_strings[];
-
+#include "levels/menu/hub/geo_header.h"
 // leveldata
 extern const Gfx dl_menu_mario_save_button_base[];
 extern const Gfx dl_menu_mario_new_button_base[];

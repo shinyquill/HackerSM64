@@ -16,26 +16,41 @@ void elevator_starting_shake(void) {
 }
 
 void elevator_act_0(void) {
-    o->oVelY = 0;
-    if (o->oElevatorType == 2) {
-        if (gMarioObject->platform == o) {
-            if (o->oPosY > o->oElevatorMidY) {
-                o->oAction = 2;
-            } else {
-                o->oAction = 1;
-            }
-        }
-    } else if (gMarioObject->oPosY > o->oElevatorMidY || o->oElevatorType == 1) {
-        o->oPosY = o->oElevatorMaxY;
-        if (gMarioObject->platform == o) {
-            o->oAction = 2;
-        }
-    } else {
-        o->oPosY = o->oElevatorMinY;
+    if (GET_BPARAM1(o->oBehParams) == 0){
+        o->oVelY = 0;
         if (gMarioObject->platform == o) {
             o->oAction = 1;
         }
+    } else {
+        o->oVelY = 0;
+        if (gMarioStates[0].pos[1] < 1100.f){
+            if (gMarioObject->platform == o) {
+                o->oAction = 3;
+            }
+        } else {
+            o->oPosY = 1047.f;
+            o->oAction = 5;
+        }
     }
+    // if (o->oElevatorType == 2) {
+    //     if (gMarioObject->platform == o) {
+    //         if (o->oPosY > o->oElevatorMidY) {
+    //             o->oAction = 2;
+    //         } else {
+    //             o->oAction = 1;
+    //         }
+    //     }
+    // } else if (gMarioObject->oPosY > o->oElevatorMidY || o->oElevatorType == 1) {
+    //     o->oPosY = o->oElevatorMaxY;
+    //     if (gMarioObject->platform == o) {
+    //         o->oAction = 2;
+    //     }
+    // } else {
+    //     o->oPosY = o->oElevatorMinY;
+    //     if (gMarioObject->platform == o) {
+    //         o->oAction = 1;
+    //     }
+    // }
 }
 
 void elevator_act_1(void) {
@@ -44,75 +59,68 @@ void elevator_act_1(void) {
         elevator_starting_shake();
     }
     approach_f32_signed(&o->oVelY, 10.0f, 2.0f);
-    o->oPosY += o->oVelY;
-    if (o->oPosY > o->oElevatorMaxY) {
-        o->oPosY = o->oElevatorMaxY;
-        if (o->oElevatorType == 2 || o->oElevatorType == 1) {
-            o->oAction = 3;
-        } else if (gMarioObject->oPosY < o->oElevatorMidY) {
-            o->oAction = 2;
-        } else {
-            o->oAction = 3;
-        }
+    if (set_mario_npc_dialog(MARIO_DIALOG_LOOK_UP) == MARIO_DIALOG_STATUS_SPEAK) {
     }
+    o->oPosY += o->oVelY;
+    if ((s16)o->oPosY > 2000.f) {
+        level_trigger_warp(gMarioState, WARP_OP_TELEPORT);
+    }
+    //     o->oPosY = o->oElevatorMaxY;
+    //     if (o->oElevatorType == 2 || o->oElevatorType == 1) {
+    //         o->oAction = 3;
+    //     } else if (gMarioObject->oPosY < o->oElevatorMidY) {
+    //         o->oAction = 1;
+    //     } else {
+    //         o->oAction = 3;
+    //     }
 }
 
 void elevator_act_2(void) {
     cur_obj_play_sound_1(SOUND_ENV_ELEVATOR1);
-    if (o->oTimer == 0 && cur_obj_is_mario_on_platform()) {
-        elevator_starting_shake();
-    }
-    approach_f32_signed(&o->oVelY, -10.0f, -2.0f);
-    o->oPosY += o->oVelY;
-    if (o->oPosY < o->oElevatorMinY) {
-        o->oPosY = o->oElevatorMinY;
-        if (o->oElevatorType == 1) {
-            o->oAction = 4;
-        } else if (o->oElevatorType == 2) {
-            o->oAction = 3;
-        } else if (gMarioObject->oPosY > o->oElevatorMidY) {
-            o->oAction = 1;
-        } else {
-            o->oAction = 3;
-        }
+    if (o->oTimer == 500){
+        // cur_obj_shake_screen(SHAKE_POS_SMALL);
+        // cur_obj_play_sound_2(SOUND_GENERAL_ELEVATOR_LAND);
+        level_trigger_warp(gMarioState, WARP_OP_TELEPORT);
     }
 }
 
 void elevator_act_4(void) {
     o->oVelY = 0;
     if (o->oTimer == 0) {
+        set_mario_npc_dialog(MARIO_DIALOG_STOP);
         cur_obj_shake_screen(SHAKE_POS_SMALL);
         cur_obj_play_sound_2(SOUND_GENERAL_ELEVATOR_LAND);
-    }
-    if (!mario_is_in_air_action() && !cur_obj_is_mario_on_platform()) {
-        o->oAction = 1;
+        o->oAction = 5;
     }
 }
 
 void elevator_act_3(void) {
-    o->oVelY = 0;
-    if (o->oTimer == 0) {
-        cur_obj_shake_screen(SHAKE_POS_SMALL);
-        cur_obj_play_sound_2(SOUND_GENERAL_ELEVATOR_LAND);
+    cur_obj_play_sound_1(SOUND_ENV_ELEVATOR1);
+    if (o->oTimer == 0 && cur_obj_is_mario_on_platform()) {
+        elevator_starting_shake();
     }
-    if (!mario_is_in_air_action() && !cur_obj_is_mario_on_platform()) {
-        o->oAction = 0;
+    approach_f32_signed(&o->oVelY, 10.0f, 2.0f);
+    if (set_mario_npc_dialog(MARIO_DIALOG_LOOK_UP) == MARIO_DIALOG_STATUS_SPEAK) {
+    }
+    o->oPosY += o->oVelY;
+    if ((s16)o->oPosY > 10295.f) {
+        o->oAction = 4;
     }
 }
 
 void bhv_elevator_init(void) {
-    s32 index = sElevatorHeights[o->oBehParams2ndByte * 3 + 2];
-    if (index == 0) {
-        o->oElevatorMinY = sElevatorHeights[o->oBehParams2ndByte * 3];
-        o->oElevatorMaxY = o->oHomeY;
-        o->oElevatorMidY = (o->oElevatorMinY + o->oElevatorMaxY) / 2;
-        o->oElevatorType = cur_obj_has_behavior(bhvRrElevatorPlatform);
-    } else {
-        o->oElevatorMinY = sElevatorHeights[o->oBehParams2ndByte * 3];
-        o->oElevatorMaxY = sElevatorHeights[o->oBehParams2ndByte * 3 + 1];
-        o->oElevatorMidY = (o->oElevatorMinY + o->oElevatorMaxY) / 2;
-        o->oElevatorType = 2;
-    }
+    // s32 index = sElevatorHeights[o->oBehParams2ndByte * 3 + 2];
+    // if (index == 0) {
+    //     o->oElevatorMinY = sElevatorHeights[o->oBehParams2ndByte * 3];
+    //     o->oElevatorMaxY = o->oHomeY;
+    //     o->oElevatorMidY = (o->oElevatorMinY + o->oElevatorMaxY) / 2;
+    //     o->oElevatorType = cur_obj_has_behavior(bhvRrElevatorPlatform);
+    // } else {
+    //     o->oElevatorMinY = sElevatorHeights[o->oBehParams2ndByte * 3];
+    //     o->oElevatorMaxY = sElevatorHeights[o->oBehParams2ndByte * 3 + 1];
+    //     o->oElevatorMidY = (o->oElevatorMinY + o->oElevatorMaxY) / 2;
+    //     o->oElevatorType = 2;
+    // }
 }
 
 ObjActionFunc sElevatorActions[] = {

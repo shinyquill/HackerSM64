@@ -1,0 +1,14 @@
+extern const GeoLayout seesaw2_geo[];
+extern u8 seesaw2_MARIOKART64_03064921_0_2_all_ci8[];
+extern u8 seesaw2_MARIOKART64_03064921_0_2_all_pal_rgba16[];
+extern u8 seesaw2_DONKEY_KONG_64_61D48B97_0_2_all_ci8[];
+extern u8 seesaw2_DONKEY_KONG_64_61D48B97_0_2_all_pal_rgba16[];
+extern Vtx seesaw2_000_displaylist_mesh_layer_1_vtx_0[113];
+extern Gfx seesaw2_000_displaylist_mesh_layer_1_tri_0[];
+extern Vtx seesaw2_000_displaylist_mesh_layer_1_vtx_1[32];
+extern Gfx seesaw2_000_displaylist_mesh_layer_1_tri_1[];
+extern Gfx mat_seesaw2_f3dlite_material_057[];
+extern Gfx mat_revert_seesaw2_f3dlite_material_057[];
+extern Gfx mat_seesaw2_f3dlite_material_056[];
+extern Gfx mat_revert_seesaw2_f3dlite_material_056[];
+extern Gfx seesaw2_000_displaylist_mesh_layer_1[];

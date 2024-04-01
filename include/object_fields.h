@@ -1287,6 +1287,8 @@ os16112*/
 
 #define /*0x0F4*/ oLuigiBlinkTimer OBJECT_FIELD_S32(0x1B)
 
+#define /*0x0F4*/ oActivateBoost OBJECT_FIELD_S32(0x1B)
+
 #define /*0x0F4*/ oF4                                           OBJECT_FIELD_S32(0x1B)
 #define /*0x0F8*/ oF8                                           OBJECT_FIELD_S32(0x1C)
 #define /*0x0FC*/ oFC                                           OBJECT_FIELD_S32(0x1D)

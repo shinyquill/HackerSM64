@@ -116,6 +116,12 @@ const LevelScript level_main_scripts_entry[] = {
     LOAD_MODEL_FROM_GEO(MODEL_TOAD,                    toad_geo),
     LOAD_MODEL_FROM_GEO(MODEL_LUIGI,                   luiginpc_geo),
     LOAD_MODEL_FROM_GEO(MODEL_FLYING_BOOST,            flying_boost_geo),
+    LOAD_MODEL_FROM_GEO(MODEL_UKIKI,                   ukiki_geo),
+    LOAD_MODEL_FROM_GEO(MODEL_BANANA,                  banana_geo),
+    LOAD_MODEL_FROM_GEO(MODEL_ROCK,                  rock_geo),
+    LOAD_MODEL_FROM_GEO(MODEL_SEESAW,                  seesaw_geo),
+    LOAD_MODEL_FROM_GEO(MODEL_SEESAW2,                  seesaw2_geo),
+    LOAD_MODEL_FROM_GEO(MODEL_ELEVATOR,                  elevator_geo),
 #ifdef IA8_30FPS_COINS
     LOAD_MODEL_FROM_GEO(MODEL_SILVER_COIN,             silver_coin_geo),
     LOAD_MODEL_FROM_GEO(MODEL_SILVER_COIN_NO_SHADOW,   silver_coin_no_shadow_geo),
@@ -251,7 +257,6 @@ const LevelScript script_func_global_6[] = {
 const LevelScript script_func_global_7[] = {
     LOAD_MODEL_FROM_DL( MODEL_DL_MONTY_MOLE_HOLE,      monty_mole_hole_seg5_dl_05000840, LAYER_TRANSPARENT_DECAL),
     LOAD_MODEL_FROM_GEO(MODEL_MONTY_MOLE,              monty_mole_geo),
-    LOAD_MODEL_FROM_GEO(MODEL_UKIKI,                   ukiki_geo),
     LOAD_MODEL_FROM_GEO(MODEL_FWOOSH,                  fwoosh_geo),
     RETURN(),
 };

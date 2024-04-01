@@ -251,7 +251,7 @@ void update_lava_boost_or_twirling(struct MarioState *m) {
             m->forwardVel *= -1.0f;
         }
 
-        if (m->forwardVel > 32.0f) {
+        if (m->forwardVel > 48.0f) {
             m->forwardVel -= 2.0f;
         }
     }
@@ -291,32 +291,32 @@ void update_flying_yaw(struct MarioState *m) {
 
 void update_flying_pitch(struct MarioState *m) {
     s16 targetPitchVel = -(s16)(m->controller->stickY * (m->forwardVel / 5.0f));
-    if (targetPitchVel > 0) {
-        if (m->angleVel[0] < 0) {
-            m->angleVel[0] += 0x40;
-            if (m->angleVel[0] > 0x20) {
-                m->angleVel[0] = 0x20;
-            }
-        } else {
-            m->angleVel[0] = approach_s32(m->angleVel[0], targetPitchVel, 0x20, 0x40);
-        }
-    } else 
+    // if (targetPitchVel > 0) {
+    //     if (m->angleVel[0] < 0) {
+    //         m->angleVel[0] += 0x40;
+    //         if (m->angleVel[0] > 0x20) {
+    //             m->angleVel[0] = 0x20;
+    //         }
+    //     } else {
+    //         m->angleVel[0] = approach_s32(m->angleVel[0], targetPitchVel, 0x20, 0x40);
+    //     }
+    // } else 
     if (targetPitchVel < 0) {
         if (m->angleVel[0] > 0) {
-            m->angleVel[0] -= 0x40;
-            if (m->angleVel[0] < -0x20) {
-                m->angleVel[0] = -0x20;
+            m->angleVel[0] -= 0x20;
+            if (m->angleVel[0] < -0x10) {
+                m->angleVel[0] = -0x10;
             }
         } else {
-            m->angleVel[0] = approach_s32(m->angleVel[0], targetPitchVel, 0x40, 0x20);
+            m->angleVel[0] = approach_s32(m->angleVel[0], targetPitchVel, 0x20, 0x10);
         }
     } else {
-        m->angleVel[0] = approach_s32(m->angleVel[0], 0, 0x40, 0x40);
+        m->angleVel[0] = approach_s32(m->angleVel[0], 0, 0x20, 0x20);
     }
 }
 
 void update_flying(struct MarioState *m) {
-    // update_flying_pitch(m);
+    update_flying_pitch(m);
     update_flying_yaw(m);
 
     m->forwardVel -= 2.0f * ((f32) m->faceAngle[0] / 0x4000) + 0.1f;
@@ -331,7 +331,7 @@ void update_flying(struct MarioState *m) {
     // } else if (m->forwardVel > 4.0f) {
     //     m->faceAngle[0] += (m->forwardVel - 32.0f) * 10.0f;
     // } else {
-        m->faceAngle[0] -= 0x25;
+        m->faceAngle[0] -= 0x10;
     // }
 
     m->faceAngle[0] += m->angleVel[0];
@@ -363,6 +363,10 @@ u32 common_air_action_step(struct MarioState *m, u32 landAction, s32 animation, 
             break;
 
         case AIR_STEP_LANDED:
+            m->flags &= ~MARIO_SPECIAL_CAPS;
+            if (!(m->flags & MARIO_CAPS)) {
+                m->flags &= ~MARIO_CAP_ON_HEAD;
+            }
             if (!check_fall_damage_or_get_stuck(m, ACT_HARD_BACKWARD_GROUND_KB)) {
                 set_mario_action(m, landAction, 0);
             }
@@ -950,6 +954,10 @@ s32 act_ground_pound(struct MarioState *m) {
                 queue_rumble_data(5, 80);
 #endif
                 play_sound(SOUND_MARIO_OOOF2, m->marioObj->header.gfx.cameraToObject);
+                m->flags &= ~MARIO_SPECIAL_CAPS;
+                if (!(m->flags & MARIO_CAPS)) {
+                    m->flags &= ~MARIO_CAP_ON_HEAD;
+                }
                 m->particleFlags |= PARTICLE_MIST_CIRCLE;
                 set_mario_action(m, ACT_BUTT_STUCK_IN_GROUND, 0);
             } else {
@@ -992,7 +1000,7 @@ s32 act_burning_jump(struct MarioState *m) {
 
     m->marioObj->oMarioBurnTimer += 3;
 
-    m->health -= 10;
+    m->health = 0;
     if (m->health < 0x100) {
         m->health = 0xFF;
     }
@@ -1014,7 +1022,7 @@ s32 act_burning_fall(struct MarioState *m) {
     m->particleFlags |= PARTICLE_FIRE;
     m->marioObj->oMarioBurnTimer += 3;
 
-    m->health -= 10;
+    m->health = 0;
     if (m->health < 0x100) {
         m->health = 0xFF;
     }
@@ -1165,7 +1173,7 @@ s32 act_forward_air_kb(struct MarioState *m) {
 
 s32 act_hard_backward_air_kb(struct MarioState *m) {
     play_knockback_sound(m);
-    common_air_knockback_step(m, ACT_HARD_BACKWARD_GROUND_KB, ACT_HARD_BACKWARD_GROUND_KB, MARIO_ANIM_BACKWARD_AIR_KB, -16.0f);
+    common_air_knockback_step(m, ACT_HARD_BACKWARD_GROUND_KB, ACT_HARD_BACKWARD_GROUND_KB, MARIO_ANIM_BACKWARD_AIR_KB, m->forwardVel);
     return FALSE;
 }
 
@@ -1212,7 +1220,7 @@ s32 act_thrown_forward(struct MarioState *m) {
         m->marioObj->header.gfx.angle[0] = pitch + 0x1800;
     }
 
-    m->forwardVel *= 0.98f;
+    // m->forwardVel *= 0.98f;
     return FALSE;
 }
 
@@ -1486,7 +1494,6 @@ s32 act_mush_bounce(struct MarioState *m) {
                 m->marioObj->header.gfx.animInfo.animFrame = 0;
                 set_mario_animation(m, MARIO_ANIM_TRIPLE_JUMP);
                 play_sound(SOUND_MARIO_YAHOO, m->marioObj->header.gfx.cameraToObject);
-                m->particleFlags |= PARTICLE_HORIZONTAL_STAR;
             } else {
                 play_mario_heavy_landing_sound(m, SOUND_ACTION_TERRAIN_BODY_HIT_GROUND);
                 set_mario_action(m, MARIO_ANIM_TRIPLE_JUMP_LAND, 0);

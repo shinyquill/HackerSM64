@@ -4,6 +4,7 @@ const GeoLayout jrb_area_1_geo[] = {
 	GEO_NODE_START(),
 	GEO_OPEN_NODE(),
 		GEO_TRANSLATE_NODE_WITH_DL(LAYER_OPAQUE, -10488, 10095, 10147, jrb_dl_Plane_001_mesh_layer_1),
+		GEO_TRANSLATE_NODE_WITH_DL(LAYER_FORCE, -10903, 14954, 1053, jrb_dl_Skybox_005_mesh_layer_0),
 	GEO_CLOSE_NODE(),
 	GEO_RETURN(),
 };
@@ -14,7 +15,7 @@ const GeoLayout jrb_area_1[] = {
 		GEO_OPEN_NODE(),
 			GEO_NODE_ORTHO(100.0000),
 			GEO_OPEN_NODE(),
-				GEO_BACKGROUND_COLOR(0x0001),
+				GEO_BACKGROUND_COLOR(0xFFFF),
 			GEO_CLOSE_NODE(),
 		GEO_CLOSE_NODE(),
 		GEO_ZBUFFER(1),

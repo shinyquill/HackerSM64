@@ -554,8 +554,13 @@ void bhv_control_loop(void);
 void bhv_mushroom_top_init(void);
 void bhv_mushroom_top_loop(void);
 void bhv_rotating_trunk_loop(void);
+void bhv_shell_loop(void);
 void bhv_luigi_init(void);
 void bhv_luigi_loop(void);
+void bhv_banana_init(void);
+void bhv_banana_loop(void);
+void bhv_falling_rock_init(void);
+void bhv_falling_rock_loop(void);
 
 Gfx *geo_move_mario_part_from_parent(s32 callContext, UNUSED struct GraphNode *node, Mat4 mtx);
 

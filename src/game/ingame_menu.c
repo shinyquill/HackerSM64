@@ -581,11 +581,11 @@ void handle_menu_scrolling(s8 scrollDirection, s8 *currentIndex, s8 minIndex, s8
     u8 index = 0;
 
     if (scrollDirection == MENU_SCROLL_VERTICAL) {
-        if (gPlayer1Controller->rawStickY >  60) index++;
-        if (gPlayer1Controller->rawStickY < -60) index += 2;
+        if ((gPlayer1Controller->rawStickY >  60) || (gPlayer1Controller->buttonDown & (U_CBUTTONS | U_JPAD))) index++;
+        if ((gPlayer1Controller->rawStickY < -60) || (gPlayer1Controller->buttonDown & (D_CBUTTONS | D_JPAD))) index += 2;
     } else if (scrollDirection == MENU_SCROLL_HORIZONTAL) {
-        if (gPlayer1Controller->rawStickX >  60) index += 2;
-        if (gPlayer1Controller->rawStickX < -60) index++;
+        if ((gPlayer1Controller->rawStickX >  60) || (gPlayer1Controller->buttonDown & (R_CBUTTONS | R_JPAD))) index += 2;
+        if ((gPlayer1Controller->rawStickX < -60) || (gPlayer1Controller->buttonDown & (L_CBUTTONS | L_JPAD))) index++;
     }
 
     if (((index ^ gMenuHoldKeyIndex) & index) == 2) {
@@ -1056,19 +1056,19 @@ void render_dialog_triangle_next(s8 linesPerBox) {
 
 void handle_special_dialog_text(s16 dialogID) { // dialog ID tables, in order
     // King Bob-omb (Start), Whomp (Start), King Bob-omb (throw him out), Eyerock (Start), Wiggler (Start)
-    s16 dialogBossStart[] = { DIALOG_017, DIALOG_114, DIALOG_128, DIALOG_117, DIALOG_150 };
+    s16 dialogBossStart[] = { DIALOG_114, DIALOG_128, DIALOG_117, DIALOG_150 };
     // Koopa the Quick (BoB), Koopa the Quick (THI), Penguin Race, Fat Penguin Race (120 stars)
-    s16 dialogRaceSound[] = { DIALOG_005, DIALOG_009, DIALOG_055, DIALOG_164             };
+    s16 dialogRaceSound[] = { DIALOG_055, DIALOG_164             };
     // Red Switch, Green Switch, Blue Switch, 100 coins star, Bowser Red Coin Star
-    s16 dialogStarSound[] = { DIALOG_010, DIALOG_011, DIALOG_012, DIALOG_013, DIALOG_014 };
+    s16 dialogStarSound[] = { DIALOG_011, DIALOG_013, DIALOG_014 };
     // King Bob-omb (Start), Whomp (Defeated), King Bob-omb (Defeated, missing in JP), Eyerock (Defeated), Wiggler (Defeated)
-    s16 dialogBossStop[]  = { DIALOG_017, DIALOG_115, DIALOG_116, DIALOG_118, DIALOG_152 };
+    s16 dialogBossStop[]  = { DIALOG_115, DIALOG_116, DIALOG_118, DIALOG_152 };
     s16 i;
 
     for (i = 0; i < (s16) ARRAY_COUNT(dialogBossStart); i++) {
         if (dialogBossStart[i] == dialogID) {
             seq_player_unlower_volume(SEQ_PLAYER_LEVEL, 60);
-            play_music(SEQ_PLAYER_LEVEL, SEQUENCE_ARGS(4, SEQ_EVENT_BOSS), 0);
+            // play_music(SEQ_PLAYER_LEVEL, SEQUENCE_ARGS(4, SEQ_BOSS), 0);
             return;
         }
     }
@@ -1174,7 +1174,7 @@ void render_dialog_entries(void) {
         case DIALOG_STATE_VERTICAL:
             gDialogBoxOpenTimer = 0.0f;
 
-            if (gPlayer1Controller->buttonPressed & (A_BUTTON | B_BUTTON)) {
+            if (gPlayer1Controller->buttonPressed & (A_BUTTON | B_BUTTON | START_BUTTON | D_CBUTTONS | R_CBUTTONS | D_JPAD | R_JPAD)) {
                 if (gLastDialogPageStrPos == -1) {
                     handle_special_dialog_text(gDialogID);
                     gDialogBoxState = DIALOG_STATE_CLOSING;
@@ -1468,14 +1468,20 @@ void change_dialog_camera_angle(void) {
 }
 
 void shade_screen(void) {
-    Gfx* dlHead = gDisplayListHead;
+    create_dl_translation_matrix(MENU_MTX_PUSH, GFX_DIMENSIONS_FROM_LEFT_EDGE(0), SCREEN_HEIGHT, 0);
 
-    gSPDisplayList(dlHead++, dl_shade_screen_begin);
-    gDPFillRectangle(dlHead++, GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(0), gBorderHeight,
-        (GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(0) - 1), ((SCREEN_HEIGHT - gBorderHeight) - 1));
-    gSPDisplayList(dlHead++, dl_shade_screen_end);
+    // This is a bit weird. It reuses the dialog text box (width 130, height -80),
+    // so scale to at least fit the screen.
+#ifdef WIDESCREEN
+    create_dl_scale_matrix(MENU_MTX_NOPUSH,
+                           GFX_DIMENSIONS_ASPECT_RATIO * SCREEN_HEIGHT / 130.0f, 3.0f, 1.0f);
+#else
+    create_dl_scale_matrix(MENU_MTX_NOPUSH, 2.6f, 3.4f, 1.0f);
+#endif
 
-    gDisplayListHead = dlHead;
+    gDPSetEnvColor(gDisplayListHead++, 0, 0, 0, 110);
+    gSPDisplayList(gDisplayListHead++, dl_draw_text_bg_box);
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
 
 void print_animated_red_coin(s16 x, s16 y) {
@@ -1512,36 +1518,8 @@ void print_animated_red_coin(s16 x, s16 y) {
 void render_pause_red_coins(void) {
     s8 x;
 
-    if (gRedCoinsCollected <= 9) {
-        for (x = 0; x < gRedCoinsCollected; x++) {
-            print_animated_red_coin(GFX_DIMENSIONS_FROM_RIGHT_EDGE(30) - x * 20, 16);
-        }
-    }
-    else {
-        print_animated_red_coin(GFX_DIMENSIONS_FROM_RIGHT_EDGE(108), 16);
-        Mtx *mtx;
-
-        mtx = alloc_display_list(sizeof(*mtx));
-        if (mtx == NULL) {
-            return;
-        }
-        guOrtho(mtx, 0.0f, SCREEN_WIDTH, 0.0f, SCREEN_HEIGHT, -10.0f, 10.0f, 1.0f);
-        gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(mtx), G_MTX_PROJECTION | G_MTX_LOAD | G_MTX_NOPUSH);
-        gSPDisplayList(gDisplayListHead++, dl_hud_img_begin);
-
-        s8 redCoinCount = gRedCoinsCollected;
-        if (redCoinCount > 99) {
-            redCoinCount = 99;
-        }
-
-        add_glyph_texture(GLYPH_MULTIPLY);
-        render_textrect(GFX_DIMENSIONS_FROM_RIGHT_EDGE(100), 16, 0);
-        add_glyph_texture(char_to_glyph_index((char) (48 + (redCoinCount / 10))));
-        render_textrect(GFX_DIMENSIONS_FROM_RIGHT_EDGE(86), 16, 0);
-        add_glyph_texture(char_to_glyph_index((char) (48 + (redCoinCount % 10))));
-        render_textrect(GFX_DIMENSIONS_FROM_RIGHT_EDGE(86), 16, 1);
-
-        gSPDisplayList(gDisplayListHead++, dl_hud_img_end);
+    for (x = 0; x < gRedCoinsCollected; x++) {
+        print_animated_red_coin(GFX_DIMENSIONS_FROM_RIGHT_EDGE(30) - x * 20, 16);
     }
 }
 
@@ -1681,6 +1659,421 @@ void render_pause_camera_options(s16 x, s16 y, s8 *index, s16 xIndex) {
             break;
     }
 }
+// Used for text opacifying. If it is below 250, it is constantly incremented.
+
+#define SELECT_FILE_X 93
+#define SCORE_X       48
+#define COPY_X        107
+#define ERASE_X      160
+#define SAVEFILE_X1   92
+#define SAVEFILE_X2  209
+#define MARIOTEXT_X1  92
+#define MARIOTEXT_X2 207
+
+#define X_VAL8 4
+#define Y_VAL8 2
+
+void render_file_select_options(s8 *index, s8 *indexOptions, s8 pressed) {
+    u8 sTextBaseAlpha[4];
+    u8 sBoxAlpha[4];
+    u8 sTextBaseOptionAlpha[3];
+    u8 sBoxOptionAlpha[3];
+    u8 textMarioA[] = { TEXT_FILE_MARIO_A };
+    u8 textMarioB[] = { TEXT_FILE_MARIO_B };
+    u8 textMarioC[] = { TEXT_FILE_MARIO_C };
+    u8 textMarioD[] = { TEXT_FILE_MARIO_D };
+    u8 textScore[] = { TEXT_SCORE };
+    u8 textCopy[] = { TEXT_COPY };
+    u8 textErase[] = { TEXT_ERASE };
+    u8 textOptions[] = { TEXT_OPTIONS };
+    u8 textNew[] = { TEXT_NEW };
+    u8 starIcon[] = { GLYPH_STAR, GLYPH_SPACE };
+    u8 xIcon[] = { GLYPH_MULTIPLY, GLYPH_SPACE };
+
+    u8 textSelectFile[] = { TEXT_SELECT_FILE };
+    s16 colorFade = gGlobalTimer << 12;
+    if (!pressed){
+        handle_menu_scrolling(MENU_SCROLL_VERTICAL, index, 0, 4);
+    }
+
+    sTextBaseOptionAlpha[0] = 255;
+    sTextBaseOptionAlpha[1] = 255;
+    sTextBaseOptionAlpha[2] = 255;
+    sBoxOptionAlpha[0] = 0;
+    sBoxOptionAlpha[1] = 0;
+    sBoxOptionAlpha[2] = 0;
+
+    switch (*index){
+        case 0:
+            sTextBaseAlpha[0] = sins(colorFade) * 50.0f + 205.0f;
+            sTextBaseAlpha[1] = 255;
+            sTextBaseAlpha[2] = 255;
+            sTextBaseAlpha[3] = 255;
+            sTextBaseOptionAlpha[0] = 255;
+            sBoxOptionAlpha[0] = 0;
+            sBoxAlpha[0] = sins(colorFade) * 50.0f + 50.0f;
+            sBoxAlpha[1] = 0;
+            sBoxAlpha[2] = 0;
+            sBoxAlpha[3] = 0;
+            break;
+        case 1:
+            sTextBaseAlpha[0] = 255;
+            sTextBaseAlpha[1] = sins(colorFade) * 50.0f + 205.0f;
+            sTextBaseAlpha[2] = 255;
+            sTextBaseAlpha[3] = 255;
+            sTextBaseOptionAlpha[0] = 255;
+            sBoxOptionAlpha[0] = 0;
+            sBoxAlpha[0] = 0;
+            sBoxAlpha[1] = sins(colorFade) * 50.0f + 50.0f;
+            sBoxAlpha[2] = 0;
+            sBoxAlpha[3] = 0;
+            break;
+        case 2:
+            sTextBaseAlpha[0] = 255;
+            sTextBaseAlpha[1] = 255;
+            sTextBaseAlpha[2] = sins(colorFade) * 50.0f + 205.0f;
+            sTextBaseAlpha[3] = 255;
+            sTextBaseOptionAlpha[0] = 255;
+            sBoxOptionAlpha[0] = 0;
+            sBoxAlpha[0] = 0;
+            sBoxAlpha[1] = 0;
+            sBoxAlpha[2] = sins(colorFade) * 50.0f + 50.0f;
+            sBoxAlpha[3] = 0;
+            break;
+        case 3:
+            sTextBaseAlpha[0] = 255;
+            sTextBaseAlpha[1] = 255;
+            sTextBaseAlpha[2] = 255;
+            sTextBaseAlpha[3] = sins(colorFade) * 50.0f + 205.0f;
+            sTextBaseOptionAlpha[0] = 255;
+            sBoxOptionAlpha[0] = 0;
+            sBoxAlpha[0] = 0;
+            sBoxAlpha[1] = 0;
+            sBoxAlpha[2] = 0;
+            sBoxAlpha[3] = sins(colorFade) * 50.0f + 50.0f;
+            break;
+        case 4:
+            sTextBaseAlpha[0] = 255;
+            sTextBaseAlpha[1] = 255;
+            sTextBaseAlpha[2] = 255;
+            sTextBaseAlpha[3] = 255;
+            sBoxOptionAlpha[0] = sins(colorFade) * 50.0f + 50.0f;
+            sBoxAlpha[0] = 0;
+            sBoxAlpha[1] = 0;
+            sBoxAlpha[2] = 0;
+            sBoxAlpha[3] = 0;
+            sTextBaseOptionAlpha[0] = sins(colorFade) * 50.0f + 205.0f;
+            // handle_menu_scrolling(MENU_SCROLL_HORIZONTAL, indexOptions, 0, 2);
+            //     switch (*indexOptions){
+            //         case 0:
+            //             sTextBaseOptionAlpha[0] = sins(colorFade) * 50.0f + 205.0f;
+            //             sTextBaseOptionAlpha[1] = 255;
+            //             sTextBaseOptionAlpha[2] = 255;
+            //             sBoxOptionAlpha[0] = sins(colorFade) * 50.0f + 50.0f;
+            //             sBoxOptionAlpha[1] = 0;
+            //             sBoxOptionAlpha[2] = 0;
+            //             break;
+            //         case 1:
+            //             sTextBaseOptionAlpha[0] = 255;
+            //             sTextBaseOptionAlpha[1] = sins(colorFade) * 50.0f + 205.0f;
+            //             sTextBaseOptionAlpha[2] = 255;
+            //             sBoxOptionAlpha[0] = 0;
+            //             sBoxOptionAlpha[1] = sins(colorFade) * 50.0f + 50.0f;
+            //             sBoxOptionAlpha[2] = 0;
+            //             break;
+            //         case 2:
+            //             sTextBaseOptionAlpha[0] = 255;
+            //             sTextBaseOptionAlpha[1] = 255;
+            //             sTextBaseOptionAlpha[2] = sins(colorFade) * 50.0f + 205.0f;
+            //             sBoxOptionAlpha[0] = 0;
+            //             sBoxOptionAlpha[1] = 0;
+            //             sBoxOptionAlpha[2] = sins(colorFade) * 50.0f + 50.0f;
+            //             break;
+            //     }
+            // break;
+    }
+    create_dl_translation_matrix(MENU_MTX_PUSH, SCORE_X-10, 178, 0);
+    create_dl_scale_matrix(MENU_MTX_NOPUSH, 0.8f, 0.4f, 1.0f);
+    gDPSetEnvColor(gDisplayListHead++, sBoxAlpha[0], sBoxAlpha[0], sBoxAlpha[0], 200);
+    gSPDisplayList(gDisplayListHead++, dl_draw_text_bg_box);
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+    create_dl_translation_matrix(MENU_MTX_PUSH, SCORE_X-10, 144, 0);
+    create_dl_scale_matrix(MENU_MTX_NOPUSH, 0.8f, 0.4f, 1.0f);
+    gDPSetEnvColor(gDisplayListHead++, sBoxAlpha[1], sBoxAlpha[1], sBoxAlpha[1], 200);
+    gSPDisplayList(gDisplayListHead++, dl_draw_text_bg_box);
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+    create_dl_translation_matrix(MENU_MTX_PUSH, SCORE_X-10, 110, 0);
+    create_dl_scale_matrix(MENU_MTX_NOPUSH, 0.8f, 0.4f, 1.0f);
+    gDPSetEnvColor(gDisplayListHead++, sBoxAlpha[2], sBoxAlpha[2], sBoxAlpha[2], 200);
+    gSPDisplayList(gDisplayListHead++, dl_draw_text_bg_box);
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+    create_dl_translation_matrix(MENU_MTX_PUSH, SCORE_X-10, 76, 0);
+    create_dl_scale_matrix(MENU_MTX_NOPUSH, 0.8f, 0.4f, 1.0f);
+    gDPSetEnvColor(gDisplayListHead++, sBoxAlpha[3], sBoxAlpha[3], sBoxAlpha[3], 200);
+    gSPDisplayList(gDisplayListHead++, dl_draw_text_bg_box);
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+    create_dl_translation_matrix(MENU_MTX_PUSH, SCORE_X-10, 42, 0);
+    create_dl_scale_matrix(MENU_MTX_NOPUSH, 0.4f, 0.4f, 1.0f);
+    gDPSetEnvColor(gDisplayListHead++, sBoxOptionAlpha[0], sBoxOptionAlpha[0], sBoxOptionAlpha[0], 200);
+    gSPDisplayList(gDisplayListHead++, dl_draw_text_bg_box);
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+    // create_dl_translation_matrix(MENU_MTX_PUSH, SCORE_X+45, 42, 0);
+    // create_dl_scale_matrix(MENU_MTX_NOPUSH, 0.4f, 0.4f, 1.0f);
+    // gDPSetEnvColor(gDisplayListHead++, sBoxOptionAlpha[1], sBoxOptionAlpha[1], sBoxOptionAlpha[1], 200);
+    // gSPDisplayList(gDisplayListHead++, dl_draw_text_bg_box);
+    // gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+    // create_dl_translation_matrix(MENU_MTX_PUSH, SCORE_X+100, 42, 0);
+    // create_dl_scale_matrix(MENU_MTX_NOPUSH, 0.4f, 0.4f, 1.0f);
+    // gDPSetEnvColor(gDisplayListHead++, sBoxOptionAlpha[2], sBoxOptionAlpha[2], sBoxOptionAlpha[2], 200);
+    // gSPDisplayList(gDisplayListHead++, dl_draw_text_bg_box);
+    // gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+
+    // Print "SELECT FILE" text
+    gSPDisplayList(gDisplayListHead++, dl_rgba16_text_begin);
+    print_hud_lut_string(HUD_LUT_DIFF, SELECT_FILE_X, 35, textSelectFile);
+    // Print file star counts
+    gDPSetEnvColor(gDisplayListHead++, sTextBaseAlpha[0], sTextBaseAlpha[0], sTextBaseAlpha[0], 250);
+    print_save_file_star_count(SAVE_FILE_A, SCORE_X, 74);
+    gDPSetEnvColor(gDisplayListHead++, sTextBaseAlpha[1], sTextBaseAlpha[1], sTextBaseAlpha[1], 250);
+    print_save_file_star_count(SAVE_FILE_B, SCORE_X, 108);
+    gDPSetEnvColor(gDisplayListHead++, sTextBaseAlpha[2], sTextBaseAlpha[2], sTextBaseAlpha[2], 250);
+    print_save_file_star_count(SAVE_FILE_C, SCORE_X, 142);
+    gDPSetEnvColor(gDisplayListHead++, sTextBaseAlpha[3], sTextBaseAlpha[3], sTextBaseAlpha[3], 250);
+    print_save_file_star_count(SAVE_FILE_D, SCORE_X, 176);
+    gSPDisplayList(gDisplayListHead++, dl_rgba16_text_end);
+    // Print file names
+    gSPDisplayList(gDisplayListHead++, dl_menu_ia8_text_begin);
+    gDPSetEnvColor(gDisplayListHead++, sTextBaseAlpha[0], sTextBaseAlpha[0], sTextBaseAlpha[0], 250);
+    print_menu_generic_string(SCORE_X, 64, textMarioA);
+    gDPSetEnvColor(gDisplayListHead++, sTextBaseAlpha[1], sTextBaseAlpha[1], sTextBaseAlpha[1], 250);
+    print_menu_generic_string(SCORE_X, 98, textMarioB);
+    gDPSetEnvColor(gDisplayListHead++, sTextBaseAlpha[2], sTextBaseAlpha[2], sTextBaseAlpha[2], 250);
+    print_menu_generic_string(SCORE_X, 132, textMarioC);
+    gDPSetEnvColor(gDisplayListHead++, sTextBaseAlpha[3], sTextBaseAlpha[3], sTextBaseAlpha[3], 250);
+    print_menu_generic_string(SCORE_X, 166, textMarioD);
+    gSPDisplayList(gDisplayListHead++, dl_menu_ia8_text_end);
+
+    // Print menu names
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
+    gDPSetEnvColor(gDisplayListHead++, sTextBaseOptionAlpha[0], sTextBaseOptionAlpha[0], sTextBaseOptionAlpha[0], 250);
+    // print_generic_string(SCORE_X, 16, textScore);
+    // gDPSetEnvColor(gDisplayListHead++, sTextBaseOptionAlpha[1], sTextBaseOptionAlpha[1], sTextBaseOptionAlpha[1], 250);
+    // print_generic_string(COPY_X, 16, textCopy);
+//     gDPSetEnvColor(gDisplayListHead++, sTextBaseOptionAlpha[2], sTextBaseOptionAlpha[2], sTextBaseOptionAlpha[2], 250);
+    print_generic_string(SCORE_X, 16, textErase);
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
+}
+
+void render_file_select(s8 *index, s8 *indexOption, s8 pressed) {
+    render_file_select_options(&gDialogLineNum, &gDialogCameraAngleIndex, pressed);
+    *index = gDialogLineNum;
+    *indexOption = gDialogCameraAngleIndex;
+}
+
+void render_file_select_erase_options(s8 *index, s8 *indexOptions, s8 pressed, s8 eraseFilePressed) {
+    u8 sTextBaseAlpha[4];
+    u8 sBoxAlpha[4];
+    u8 sTextBaseOptionAlpha[3];
+    u8 sBoxOptionAlpha[3];
+    u8 textMarioA[] = { TEXT_FILE_MARIO_A };
+    u8 textMarioB[] = { TEXT_FILE_MARIO_B };
+    u8 textMarioC[] = { TEXT_FILE_MARIO_C };
+    u8 textMarioD[] = { TEXT_FILE_MARIO_D };
+    u8 textScore[] = { TEXT_SCORE };
+    u8 textReturn[] = { TEXT_RETURN };
+    u8 textErase[] = { TEXT_ERASE };
+    u8 textOptions[] = { TEXT_OPTIONS };
+    u8 textNew[] = { TEXT_NEW };
+    u8 starIcon[] = { GLYPH_STAR, GLYPH_SPACE };
+    u8 xIcon[] = { GLYPH_MULTIPLY, GLYPH_SPACE };
+
+    s16 colorFade = gGlobalTimer << 12;
+    if (!pressed && !eraseFilePressed){
+        handle_menu_scrolling(MENU_SCROLL_VERTICAL, index, 0, 4);
+    }
+
+    sTextBaseOptionAlpha[0] = 255;
+    sTextBaseOptionAlpha[1] = 255;
+    sTextBaseOptionAlpha[2] = 255;
+    sBoxOptionAlpha[0] = 0;
+    sBoxOptionAlpha[1] = 0;
+    sBoxOptionAlpha[2] = 0;
+
+    switch (*index){
+        case 0:
+            sTextBaseAlpha[0] = sins(colorFade) * 50.0f + 205.0f;
+            sTextBaseAlpha[1] = 255;
+            sTextBaseAlpha[2] = 255;
+            sTextBaseAlpha[3] = 255;
+            sTextBaseOptionAlpha[0] = 255;
+            sBoxOptionAlpha[0] = 0;
+            sBoxAlpha[0] = sins(colorFade) * 50.0f + 50.0f;
+            sBoxAlpha[1] = 0;
+            sBoxAlpha[2] = 0;
+            sBoxAlpha[3] = 0;
+            break;
+        case 1:
+            sTextBaseAlpha[0] = 255;
+            sTextBaseAlpha[1] = sins(colorFade) * 50.0f + 205.0f;
+            sTextBaseAlpha[2] = 255;
+            sTextBaseAlpha[3] = 255;
+            sTextBaseOptionAlpha[0] = 255;
+            sBoxOptionAlpha[0] = 0;
+            sBoxAlpha[0] = 0;
+            sBoxAlpha[1] = sins(colorFade) * 50.0f + 50.0f;
+            sBoxAlpha[2] = 0;
+            sBoxAlpha[3] = 0;
+            break;
+        case 2:
+            sTextBaseAlpha[0] = 255;
+            sTextBaseAlpha[1] = 255;
+            sTextBaseAlpha[2] = sins(colorFade) * 50.0f + 205.0f;
+            sTextBaseAlpha[3] = 255;
+            sTextBaseOptionAlpha[0] = 255;
+            sBoxOptionAlpha[0] = 0;
+            sBoxAlpha[0] = 0;
+            sBoxAlpha[1] = 0;
+            sBoxAlpha[2] = sins(colorFade) * 50.0f + 50.0f;
+            sBoxAlpha[3] = 0;
+            break;
+        case 3:
+            sTextBaseAlpha[0] = 255;
+            sTextBaseAlpha[1] = 255;
+            sTextBaseAlpha[2] = 255;
+            sTextBaseAlpha[3] = sins(colorFade) * 50.0f + 205.0f;
+            sTextBaseOptionAlpha[0] = 255;
+            sBoxOptionAlpha[0] = 0;
+            sBoxAlpha[0] = 0;
+            sBoxAlpha[1] = 0;
+            sBoxAlpha[2] = 0;
+            sBoxAlpha[3] = sins(colorFade) * 50.0f + 50.0f;
+            break;
+        case 4:
+            sTextBaseAlpha[0] = 255;
+            sTextBaseAlpha[1] = 255;
+            sTextBaseAlpha[2] = 255;
+            sTextBaseAlpha[3] = 255;
+            sBoxOptionAlpha[0] = sins(colorFade) * 50.0f + 50.0f;
+            sBoxAlpha[0] = 0;
+            sBoxAlpha[1] = 0;
+            sBoxAlpha[2] = 0;
+            sBoxAlpha[3] = 0;
+            sTextBaseOptionAlpha[0] = sins(colorFade) * 50.0f + 205.0f;
+            // handle_menu_scrolling(MENU_SCROLL_HORIZONTAL, indexOptions, 0, 2);
+            //     switch (*indexOptions){
+            //         case 0:
+            //             sTextBaseOptionAlpha[0] = sins(colorFade) * 50.0f + 205.0f;
+            //             sTextBaseOptionAlpha[1] = 255;
+            //             sTextBaseOptionAlpha[2] = 255;
+            //             sBoxOptionAlpha[0] = sins(colorFade) * 50.0f + 50.0f;
+            //             sBoxOptionAlpha[1] = 0;
+            //             sBoxOptionAlpha[2] = 0;
+            //             break;
+            //         case 1:
+            //             sTextBaseOptionAlpha[0] = 255;
+            //             sTextBaseOptionAlpha[1] = sins(colorFade) * 50.0f + 205.0f;
+            //             sTextBaseOptionAlpha[2] = 255;
+            //             sBoxOptionAlpha[0] = 0;
+            //             sBoxOptionAlpha[1] = sins(colorFade) * 50.0f + 50.0f;
+            //             sBoxOptionAlpha[2] = 0;
+            //             break;
+            //         case 2:
+            //             sTextBaseOptionAlpha[0] = 255;
+            //             sTextBaseOptionAlpha[1] = 255;
+            //             sTextBaseOptionAlpha[2] = sins(colorFade) * 50.0f + 205.0f;
+            //             sBoxOptionAlpha[0] = 0;
+            //             sBoxOptionAlpha[1] = 0;
+            //             sBoxOptionAlpha[2] = sins(colorFade) * 50.0f + 50.0f;
+            //             break;
+            //     }
+            // break;
+    }
+    create_dl_translation_matrix(MENU_MTX_PUSH, SCORE_X-10, 178, 0);
+    create_dl_scale_matrix(MENU_MTX_NOPUSH, 0.8f, 0.4f, 1.0f);
+    gDPSetEnvColor(gDisplayListHead++, sBoxAlpha[0], sBoxAlpha[0], sBoxAlpha[0], 200);
+    gSPDisplayList(gDisplayListHead++, dl_draw_text_bg_box);
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+    create_dl_translation_matrix(MENU_MTX_PUSH, SCORE_X-10, 144, 0);
+    create_dl_scale_matrix(MENU_MTX_NOPUSH, 0.8f, 0.4f, 1.0f);
+    gDPSetEnvColor(gDisplayListHead++, sBoxAlpha[1], sBoxAlpha[1], sBoxAlpha[1], 200);
+    gSPDisplayList(gDisplayListHead++, dl_draw_text_bg_box);
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+    create_dl_translation_matrix(MENU_MTX_PUSH, SCORE_X-10, 110, 0);
+    create_dl_scale_matrix(MENU_MTX_NOPUSH, 0.8f, 0.4f, 1.0f);
+    gDPSetEnvColor(gDisplayListHead++, sBoxAlpha[2], sBoxAlpha[2], sBoxAlpha[2], 200);
+    gSPDisplayList(gDisplayListHead++, dl_draw_text_bg_box);
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+    create_dl_translation_matrix(MENU_MTX_PUSH, SCORE_X-10, 76, 0);
+    create_dl_scale_matrix(MENU_MTX_NOPUSH, 0.8f, 0.4f, 1.0f);
+    gDPSetEnvColor(gDisplayListHead++, sBoxAlpha[3], sBoxAlpha[3], sBoxAlpha[3], 200);
+    gSPDisplayList(gDisplayListHead++, dl_draw_text_bg_box);
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+    create_dl_translation_matrix(MENU_MTX_PUSH, SCORE_X-10, 42, 0);
+    create_dl_scale_matrix(MENU_MTX_NOPUSH, 0.4f, 0.4f, 1.0f);
+    gDPSetEnvColor(gDisplayListHead++, sBoxOptionAlpha[0], sBoxOptionAlpha[0], sBoxOptionAlpha[0], 200);
+    gSPDisplayList(gDisplayListHead++, dl_draw_text_bg_box);
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+    // create_dl_translation_matrix(MENU_MTX_PUSH, SCORE_X+45, 42, 0);
+    // create_dl_scale_matrix(MENU_MTX_NOPUSH, 0.4f, 0.4f, 1.0f);
+    // gDPSetEnvColor(gDisplayListHead++, sBoxOptionAlpha[1], sBoxOptionAlpha[1], sBoxOptionAlpha[1], 200);
+    // gSPDisplayList(gDisplayListHead++, dl_draw_text_bg_box);
+    // gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+    // create_dl_translation_matrix(MENU_MTX_PUSH, SCORE_X+100, 42, 0);
+    // create_dl_scale_matrix(MENU_MTX_NOPUSH, 0.4f, 0.4f, 1.0f);
+    // gDPSetEnvColor(gDisplayListHead++, sBoxOptionAlpha[2], sBoxOptionAlpha[2], sBoxOptionAlpha[2], 200);
+    // gSPDisplayList(gDisplayListHead++, dl_draw_text_bg_box);
+    // gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+
+    // Print "SELECT FILE" text
+    gSPDisplayList(gDisplayListHead++, dl_rgba16_text_begin);
+    // Print file star counts
+    gDPSetEnvColor(gDisplayListHead++, sTextBaseAlpha[0], sTextBaseAlpha[0], sTextBaseAlpha[0], 250);
+    print_save_file_star_count(SAVE_FILE_A, SCORE_X, 74);
+    gDPSetEnvColor(gDisplayListHead++, sTextBaseAlpha[1], sTextBaseAlpha[1], sTextBaseAlpha[1], 250);
+    print_save_file_star_count(SAVE_FILE_B, SCORE_X, 108);
+    gDPSetEnvColor(gDisplayListHead++, sTextBaseAlpha[2], sTextBaseAlpha[2], sTextBaseAlpha[2], 250);
+    print_save_file_star_count(SAVE_FILE_C, SCORE_X, 142);
+    gDPSetEnvColor(gDisplayListHead++, sTextBaseAlpha[3], sTextBaseAlpha[3], sTextBaseAlpha[3], 250);
+    print_save_file_star_count(SAVE_FILE_D, SCORE_X, 176);
+    gSPDisplayList(gDisplayListHead++, dl_rgba16_text_end);
+    // Print file names
+    gSPDisplayList(gDisplayListHead++, dl_menu_ia8_text_begin);
+    gDPSetEnvColor(gDisplayListHead++, sTextBaseAlpha[0], sTextBaseAlpha[0], sTextBaseAlpha[0], 250);
+    print_menu_generic_string(SCORE_X, 64, textMarioA);
+    gDPSetEnvColor(gDisplayListHead++, sTextBaseAlpha[1], sTextBaseAlpha[1], sTextBaseAlpha[1], 250);
+    print_menu_generic_string(SCORE_X, 98, textMarioB);
+    gDPSetEnvColor(gDisplayListHead++, sTextBaseAlpha[2], sTextBaseAlpha[2], sTextBaseAlpha[2], 250);
+    print_menu_generic_string(SCORE_X, 132, textMarioC);
+    gDPSetEnvColor(gDisplayListHead++, sTextBaseAlpha[3], sTextBaseAlpha[3], sTextBaseAlpha[3], 250);
+    print_menu_generic_string(SCORE_X, 166, textMarioD);
+    gSPDisplayList(gDisplayListHead++, dl_menu_ia8_text_end);
+
+    // Print menu names
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
+    gDPSetEnvColor(gDisplayListHead++, sTextBaseOptionAlpha[0], sTextBaseOptionAlpha[0], sTextBaseOptionAlpha[0], 250);
+    // print_generic_string(SCORE_X, 16, textScore);
+    // gDPSetEnvColor(gDisplayListHead++, sTextBaseOptionAlpha[1], sTextBaseOptionAlpha[1], sTextBaseOptionAlpha[1], 250);
+    // print_generic_string(COPY_X, 16, textCopy);
+//     gDPSetEnvColor(gDisplayListHead++, sTextBaseOptionAlpha[2], sTextBaseOptionAlpha[2], sTextBaseOptionAlpha[2], 250);
+    print_generic_string(SCORE_X, 16, textReturn);
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
+}
+
+void render_file_select_erase(s8 *index, s8 *indexOption, s8 pressed, s8 eraseFilePressed) {
+    render_file_select_erase_options(&gDialogLineNum, &gDialogCameraAngleIndex, pressed, eraseFilePressed);
+    *index = gDialogLineNum;
+    *indexOption = gDialogCameraAngleIndex;
+}
+void erase_yes_or_no_handler(s8 *index) {
+    handle_menu_scrolling(MENU_SCROLL_HORIZONTAL, &gDialogCameraAngleIndex, 0, 1);
+    *index = gDialogCameraAngleIndex;
+}
+
+void render_file_select_init(void) {
+    gDialogLineNum = 0;
+    gDialogCameraAngleIndex = 0;
+    gDialogTextAlpha = 0;
+}
 
 #define X_VAL8 4
 #define Y_VAL8 2
@@ -1723,7 +2116,6 @@ void render_pause_castle_menu_box(s16 x, s16 y) {
 
     create_dl_translation_matrix(MENU_MTX_PUSH, x + 6, y - 28, 0);
     create_dl_rotation_matrix(MENU_MTX_NOPUSH, DEFAULT_DIALOG_BOX_ANGLE, 0, 0, 1.0f);
-    gDPPipeSync(gDisplayListHead++);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, gDialogTextAlpha);
     gSPDisplayList(gDisplayListHead++, dl_draw_triangle);
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
@@ -1932,7 +2324,7 @@ s32 render_pause_courses_and_castle(void) {
             render_pause_castle_menu_box(160, 143);
             render_pause_castle_main_strings(104, 60);
 
-            if (gPlayer1Controller->buttonPressed & (A_BUTTON | START_BUTTON)) {
+            if (gPlayer1Controller->buttonPressed & (A_BUTTON | START_BUTTON | Z_TRIG)) {
                 level_set_transition(0, NULL);
                 play_sound(SOUND_MENU_PAUSE_CLOSE, gGlobalSoundSource);
                 gMenuMode = MENU_MODE_NONE;
@@ -2015,11 +2407,11 @@ void print_hud_course_complete_coins(s16 x, s16 y) {
             gCourseCompleteCoins++;
             play_sound(SOUND_MENU_YOSHI_GAIN_LIVES, gGlobalSoundSource);
 
-#ifdef ENABLE_LIVES
-            if (gCourseCompleteCoins && ((gCourseCompleteCoins % 50) == 0)) {
-                play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
-                gMarioState->numLives++;
-            }
+#ifndef DISABLE_LIVES
+            // if (gCourseCompleteCoins && ((gCourseCompleteCoins % 50) == 0)) {
+            //     play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
+            //     gMarioState->numLives++;
+            // }
 #endif
         }
 
@@ -2159,6 +2551,9 @@ s32 render_course_complete_screen(void) {
         case DIALOG_STATE_OPENING:
             render_course_complete_lvl_info_and_hud_str();
             if (gCourseDoneMenuTimer > 100 && gCourseCompleteCoinsEqual) {
+#ifdef SAVE_NUM_LIVES
+                save_file_set_num_lives(gMarioState->numLives);
+#endif
                 gDialogBoxState = DIALOG_STATE_VERTICAL;
                 level_set_transition(-1, NULL);
                 gDialogTextAlpha = 0;

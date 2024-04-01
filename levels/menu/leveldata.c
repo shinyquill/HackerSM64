@@ -1830,6 +1830,8 @@ const Collision main_menu_seg7_collision[] = {
     COL_END(),
 };
 
+#include "levels/menu/hub/model.inc.c"
+
 #ifdef VERSION_EU
 
 // Duplicate course name tables; the main menu needs all languages loaded at

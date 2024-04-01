@@ -44,6 +44,7 @@ u32 interact_snufit_bullet (struct MarioState *m, u32 interactType, struct Objec
 u32 interact_clam_or_bubba (struct MarioState *m, u32 interactType, struct Object *obj);
 u32 interact_bully         (struct MarioState *m, u32 interactType, struct Object *obj);
 u32 interact_shock         (struct MarioState *m, u32 interactType, struct Object *obj);
+u32 interact_banana         (struct MarioState *m, u32 interactType, struct Object *obj);
 u32 interact_mr_blizzard   (struct MarioState *m, u32 interactType, struct Object *obj);
 u32 interact_hit_from_below(struct MarioState *m, u32 interactType, struct Object *obj);
 u32 interact_bounce_top    (struct MarioState *m, u32 interactType, struct Object *obj);
@@ -80,6 +81,7 @@ static struct InteractionHandler sInteractionHandlers[] = {
     { INTERACT_CLAM_OR_BUBBA,  interact_clam_or_bubba },
     { INTERACT_BULLY,          interact_bully },
     { INTERACT_SHOCK,          interact_shock },
+    { INTERACT_BANANA,         interact_banana },
     { INTERACT_BOUNCE_TOP2,    interact_bounce_top },
     { INTERACT_MR_BLIZZARD,    interact_mr_blizzard },
     { INTERACT_HIT_FROM_BELOW, interact_hit_from_below },
@@ -1283,7 +1285,7 @@ u32 interact_shock(struct MarioState *m, UNUSED u32 interactType, struct Object 
             return drop_and_set_mario_action(m, ACT_WATER_SHOCKED, 0);
         } else {
             update_mario_sound_and_camera(m);
-            return drop_and_set_mario_action(m, ACT_SHOCKED, actionArg);
+            return drop_and_set_mario_action(m, ACT_THROWN_FORWARD, actionArg);
         }
     }
 
@@ -1292,6 +1294,15 @@ u32 interact_shock(struct MarioState *m, UNUSED u32 interactType, struct Object 
     }
 
     return FALSE;
+}
+
+u32 interact_banana(struct MarioState *m, UNUSED u32 interactType, struct Object *obj) {
+    mario_stop_riding_and_holding(m);
+
+    update_mario_sound_and_camera(m);
+    play_sound(SOUND_MARIO_OOOF, m->marioObj->header.gfx.cameraToObject);
+    drop_and_set_mario_action(m, ACT_THROWN_FORWARD, 0);
+    return TRUE;
 }
 
 UNUSED static u32 interact_stub(UNUSED struct MarioState *m, UNUSED u32 interactType, struct Object *obj) {
@@ -1916,17 +1927,10 @@ void pss_begin_slide(UNUSED struct MarioState *m) {
 }
 
 void start_flying(struct MarioState *m) {
-    m->flags |= MARIO_WING_CAP | MARIO_CAP_ON_HEAD;
-    set_mario_action(m, ACT_BOOST_FLYING, 0);
-    // mario_set_forward_vel(m, m->forwardVel);
-
-    // play_sound_if_no_flag(m, SOUND_MARIO_YAHOO, MARIO_MARIO_SOUND_PLAYED);
-    // set_mario_animation(m, MARIO_ANIM_AIRBORNE_ON_STOMACH);
-    // m->faceAngle[0] = atan2s(m->forwardVel, m->vel[1]);
-    // m->marioObj->header.gfx.angle[0] = -m->faceAngle[0];
-    // if ((m->flags & MARIO_WING_CAP) && m->vel[1] < 0.0f) {
-    //     set_mario_action(m, ACT_FLYING, 0);
-    // }
+    if (m->pos[1] < m->floorHeight + 10.0f) {
+        m->flags |= MARIO_WING_CAP | MARIO_CAP_ON_HEAD;
+        set_mario_action(m, ACT_BOOST_FLYING, 0);
+    }
 }
 
 void pss_end_slide(struct MarioState *m) {
@@ -1956,6 +1960,7 @@ void pss_end_slide(struct MarioState *m) {
                 // }
                 sSecondSlideStarted = FALSE;
                 level_trigger_warp(gMarioState, WARP_OP_FINISH);
+
             }
             break;
         }

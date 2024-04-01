@@ -55,7 +55,7 @@ void idle_ukiki_taunt(void) {
 
     if (o->oSubAction == UKIKI_SUB_ACT_TAUNT_NONE) {
         // Subaction is between 1 and 4.
-        o->oSubAction = (s32)(random_float() * 4.0f + 1.0f);
+        o->oSubAction = UKIKI_SUB_ACT_TAUNT_JUMP_CLAP;
 
         // Counter keeps track of the iterations done, while ToBeDone
         // is the count of iterations to be done (between 2 and 5).
@@ -112,50 +112,11 @@ void idle_ukiki_taunt(void) {
  * standing around.
  */
 void ukiki_act_idle(void) {
-    idle_ukiki_taunt();
-
-    if (is_cap_ukiki_and_mario_has_normal_cap_on_head()) {
-        if (o->oDistanceToMario > 700.0f && o->oDistanceToMario < 1000.0f) {
-            o->oAction = UKIKI_ACT_RUN;
-        } else if (o->oDistanceToMario <= 700.0f && o->oDistanceToMario > 200.0f) {
-            if (abs_angle_diff(o->oAngleToMario, o->oMoveAngleYaw) > 0x1000) {
-                o->oAction = UKIKI_ACT_TURN_TO_MARIO;
-            }
-        }
-    } else if (o->oDistanceToMario < 300.0f) {
-        o->oAction = UKIKI_ACT_RUN;
-    }
-
-    if (o->oUkikiTextState == UKIKI_TEXT_GO_TO_CAGE) {
-        o->oAction = UKIKI_ACT_GO_TO_CAGE;
-    }
-
-    // Jump away from Mario after stealing his cap.
-    if (o->oUkikiTextState == UKIKI_TEXT_STOLE_CAP) {
-        o->oMoveAngleYaw = gMarioObject->oMoveAngleYaw + 0x8000;
-
-        if (check_if_moving_over_floor(50.0f, 150.0f)) {
-            o->oAction = UKIKI_ACT_JUMP;
-        } else {
-            o->oMoveAngleYaw = gMarioObject->oMoveAngleYaw + 0x4000;
-
-            if (check_if_moving_over_floor(50.0f, 150.0f)) {
-                o->oAction = UKIKI_ACT_JUMP;
-            } else {
-                o->oMoveAngleYaw = gMarioObject->oMoveAngleYaw - 0x4000;
-                if (check_if_moving_over_floor(50.0f, 150.0f)) {
-                    o->oAction = UKIKI_ACT_JUMP;
-                }
-            }
-        }
-
-        o->oUkikiTextState = UKIKI_TEXT_HAS_CAP;
-    }
-
-    if (o->oBehParams2ndByte == UKIKI_BP_CAP) {
-        if (o->oPosY < -1550.0f) {
-            o->oAction = UKIKI_ACT_RETURN_HOME;
-        }
+    cur_obj_rotate_yaw_toward(o->oAngleToMario, 0x800);
+    if (o->oDistanceToMario <= 2000.0f){
+        cur_obj_init_animation_with_sound(UKIKI_ANIM_JUMP_CLAP);
+    } else {
+        cur_obj_init_animation_with_sound(UKIKI_ANIM_SCREECH);
     }
 }
 
@@ -465,19 +426,8 @@ void ukiki_free_loop(void) {
 
     cur_obj_update_floor_and_walls();
     cur_obj_call_action_function(sUkikiActions);
-
-    if (o->oAction == UKIKI_ACT_GO_TO_CAGE || o->oAction == UKIKI_ACT_RETURN_HOME) {
-        steepSlopeAngleDegrees = -88;
-    } else {
-        steepSlopeAngleDegrees = -20;
-    }
-
     cur_obj_move_standard(steepSlopeAngleDegrees);
-    handle_cap_ukiki_reset();
-
-    if (!(o->oMoveFlags & OBJ_MOVE_MASK_IN_WATER)) {
-        exec_anim_sound_state(sUkikiSoundStates);
-    }
+    // handle_cap_ukiki_reset();
 }
 
 /**
@@ -582,11 +532,7 @@ void cap_ukiki_held_loop(void) {
  * Initializatation for ukiki, determines if it has Mario's cap.
  */
 void bhv_ukiki_init(void) {
-    if ((o->oBehParams2ndByte == UKIKI_BP_CAP)
-        && (save_file_get_flags() & SAVE_FLAG_CAP_ON_UKIKI)) {
-        o->oUkikiTextState = UKIKI_TEXT_HAS_CAP;
-        o->oUkikiHasCap |= UKIKI_CAP_ON;
-    }
+    o->oAction = UKIKI_ACT_IDLE;
 }
 
 /**
@@ -594,38 +540,8 @@ void bhv_ukiki_init(void) {
  * dependent on the held state and whick ukiki it is (cage or cap).
  */
 void bhv_ukiki_loop(void) {
-    switch (o->oHeldState) {
-        case HELD_FREE:
-            //! @bug (PARTIAL_UPDATE)
-            o->oUkikiTextboxTimer = 0;
-            ukiki_free_loop();
-            break;
-
-        case HELD_HELD:
-            cur_obj_unrender_set_action_and_anim(UKIKI_ANIM_HELD, 0);
-            obj_copy_pos(o, gMarioObject);
-
-            if (o->oBehParams2ndByte == UKIKI_BP_CAP) {
-                cap_ukiki_held_loop();
-            } else {
-                cage_ukiki_held_loop();
-            }
-            break;
-
-        case HELD_THROWN:
-        case HELD_DROPPED:
-            cur_obj_get_dropped();
-            break;
-    }
-
-    if (o->oUkikiHasCap & UKIKI_CAP_ON) {
-        o->oAnimState = UKIKI_ANIM_STATE_CAP_ON;
-    } else {
-        o->oAnimState = UKIKI_ANIM_STATE_DEFAULT;
-    }
-
-    o->oInteractStatus = INT_STATUS_NONE;
-
+    cur_obj_update_floor_and_walls();
+    cur_obj_call_action_function(sUkikiActions);
     print_debug_bottom_up("mode   %d\n", o->oAction);
     print_debug_bottom_up("action %d\n", o->oHeldState);
 }
