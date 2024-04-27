@@ -505,6 +505,19 @@ void save_file_collect_star_or_key(s16 coinScore, s16 starIndex) {
     }
 }
 
+void save_file_finish_race(s16 coinScore, s16 timer) {
+    s32 fileIndex = gCurrSaveFileNum - 1;
+    s32 courseIndex = COURSE_NUM_TO_INDEX(gCurrCourseNum);
+
+    // s16 filesave_timer = gSaveBuffer.files[fileIndex][0].courseTimer[courseIndex];
+    // if (filesave_timer > timer){
+    //     gSaveBuffer.files[fileIndex][0].courseTimer[courseIndex] = timer;
+    //     gSaveFileModified = TRUE;
+    // }
+}
+
+
+
 s32 save_file_exists(s32 fileIndex) {
     return (gSaveBuffer.files[fileIndex][0].flags & SAVE_FLAG_FILE_EXISTS) != 0;
 }
@@ -682,6 +695,22 @@ void save_file_set_cap_pos(s16 x, s16 y, s16 z) {
     saveFile->capArea = gCurrAreaIndex;
     vec3s_set(saveFile->capPos, x, y, z);
     save_file_set_flags(SAVE_FLAG_CAP_ON_GROUND);
+}
+
+void save_file_set_beaten(void) {
+    struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1][0];
+
+    saveFile->beatenFinalLevel = TRUE;
+    gSaveFileModified = TRUE;
+}
+
+void save_file_get_beaten(void) {
+    struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1][0];
+
+    if (saveFile->beatenFinalLevel) {
+        return TRUE;
+    }
+    return FALSE;
 }
 
 s32 save_file_get_cap_pos(Vec3s capPos) {

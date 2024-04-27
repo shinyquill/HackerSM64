@@ -1591,11 +1591,11 @@ s32 common_ground_knockback_action(struct MarioState *m, s32 animation, s32 chec
         play_sound_if_no_flag(m, SOUND_MARIO_OOOF2, MARIO_MARIO_SOUND_PLAYED);
     }
 
-    if (m->forwardVel > 32.0f) {
-        m->forwardVel = 32.0f;
+    if (m->forwardVel > 64.0f) {
+        m->forwardVel = 64.0f;
     }
-    if (m->forwardVel < -32.0f) {
-        m->forwardVel = -32.0f;
+    if (m->forwardVel < -64.0f) {
+        m->forwardVel = -64.0f;
     }
 
     s32 animFrame = set_mario_animation(m, animation);

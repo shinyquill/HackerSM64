@@ -561,6 +561,15 @@ void bhv_banana_init(void);
 void bhv_banana_loop(void);
 void bhv_falling_rock_init(void);
 void bhv_falling_rock_loop(void);
+void bhv_red_circle_init(void);
+void bhv_red_circle_loop(void);
+void bhv_hidden_red_coin_init(void);
+void bhv_hidden_red_coin_loop(void);
+void bhv_dragon_coin_loop(void);
+void bhv_hidden_red_coin_dragon_coin_init(void);
+void bhv_hidden_red_coin_dragon_coin_loop(void);
+void bhv_falling_piece_temple_init(void);
+void bhv_falling_piece_temple_loop(void);
 
 Gfx *geo_move_mario_part_from_parent(s32 callContext, UNUSED struct GraphNode *node, Mat4 mtx);
 

@@ -776,3 +776,5 @@ UNUSED s32 debug_sequence_tracker(s16 debugInputSequence[]) {
 #include "behaviors/yoshi.inc.c"
 #include "behaviors/control.inc.c"
 #include "behaviors/luigi.inc.c"
+#include "behaviors/red_circle.inc.c"
+#include "behaviors/dragon_coin.inc.c"

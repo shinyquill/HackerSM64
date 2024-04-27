@@ -95,6 +95,36 @@
             "release_rate": 208,
             "envelope": "envelope0",
             "sound": "1C"
+        },
+        "custom01": {
+            "release_rate": 208,
+            "envelope": "envelope0",
+            "sound": "toad_01"
+        },
+        "custom02": {
+            "release_rate": 208,
+            "envelope": "envelope0",
+            "sound": "toad_02"
+        },
+        "custom03": {
+            "release_rate": 208,
+            "envelope": "envelope0",
+            "sound": "dragon_coin"
+        },
+        "custom04": {
+            "release_rate": 208,
+            "envelope": "envelope0",
+            "sound": "red_circle"
+        },
+        "custom05": {
+            "release_rate": 208,
+            "envelope": "envelope0",
+            "sound": "spring"
+        },
+        "custom06": {
+            "release_rate": 208,
+            "envelope": "envelope0",
+            "sound": "slip"
         }
     },
     "instrument_list": [
@@ -113,6 +143,12 @@
         "inst12",
         "inst13",
         "inst14",
-        "inst15"
+        "inst15",
+        "custom01",
+        "custom02",
+        "custom03",
+        "custom04",
+        "custom05",
+        "custom06"
     ]
 }

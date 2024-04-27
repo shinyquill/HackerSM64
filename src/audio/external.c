@@ -2173,8 +2173,7 @@ void play_dialog_sound(u8 dialogID) {
 
     // "You've stepped on the (Wing|Metal|Vanish) Cap Switch"
     if (dialogID == DIALOG_110
-     || dialogID == DIALOG_011
-     || dialogID == DIALOG_012) {
+     || dialogID == DIALOG_011) {
         play_puzzle_jingle();
     }
 }

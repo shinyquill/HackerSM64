@@ -17,6 +17,7 @@
 #include "engine/math_util.h"
 #include "puppycam2.h"
 #include "puppyprint.h"
+#include "../buffers/buffers.h"
 
 #include "config.h"
 
@@ -576,7 +577,12 @@ void render_hud(void) {
             render_hud_mario_lives();
         }
 #endif
-      
+        // s32 courseIndex = COURSE_NUM_TO_INDEX(gCurrCourseNum);
+        // struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1][0];
+        // print_text_fmt_int(20, (SCREEN_HEIGHT - 80), "PosY %d", (s16)saveFile->beatenFinalLevel);
+        // print_text_fmt_int(20, (SCREEN_HEIGHT - 64), "PosY %d", (s16)saveFile->courseTimer[courseIndex]);
+        // print_text_fmt_int(20, (SCREEN_HEIGHT - 48), "PosY %d", (s16)saveFile->courseCoinScores[courseIndex]);
+
         if (hudDisplayFlags & HUD_DISPLAY_FLAG_COIN_COUNT) {
             render_hud_coins();
         }

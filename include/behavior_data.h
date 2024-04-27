@@ -550,5 +550,10 @@ extern const BehaviorScript bhvFallingRock[];
 extern const BehaviorScript bhvSeesaw[];
 extern const BehaviorScript bhvSeesaw2[];
 extern const BehaviorScript bhvAnotherElavator[];
+extern const BehaviorScript bhvRedRing[];
+extern const BehaviorScript bhvHiddenRedCoin[];
+extern const BehaviorScript bhvDragonCoin[];
+extern const BehaviorScript bhvHiddenDragonCoin[];
+extern const BehaviorScript bhvFallingPieceTemple[];
 
 #endif // BEHAVIOR_DATA_H

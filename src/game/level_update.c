@@ -817,6 +817,13 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
                 play_transition(WARP_TRANSITION_FADE_INTO_STAR, sDelayedWarpTimer, 0x00, 0x00, 0x00);
                 break;
 
+            case WARP_OP_REPLAY:
+                sDelayedWarpTimer = 20;
+                sSourceWarpNodeId = WARP_NODE_REPLAY;
+                fadeMusic = !music_unchanged_through_warp(sSourceWarpNodeId);
+                play_transition(WARP_TRANSITION_FADE_INTO_STAR, sDelayedWarpTimer, 0x00, 0x00, 0x00);
+                break;
+                
             case WARP_OP_FINISH:
                 sDelayedWarpTimer = 20;
                 sSourceWarpNodeId = WARP_NODE_FINISH_LINE;

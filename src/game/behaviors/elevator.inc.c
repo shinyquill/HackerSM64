@@ -23,12 +23,12 @@ void elevator_act_0(void) {
         }
     } else {
         o->oVelY = 0;
-        if (gMarioStates[0].pos[1] < 1100.f){
+        if (gMarioStates[0].pos[1] < 10000.f){
             if (gMarioObject->platform == o) {
                 o->oAction = 3;
             }
         } else {
-            o->oPosY = 1047.f;
+            o->oPosY = 10220.f;
             o->oAction = 5;
         }
     }
@@ -103,9 +103,13 @@ void elevator_act_3(void) {
     if (set_mario_npc_dialog(MARIO_DIALOG_LOOK_UP) == MARIO_DIALOG_STATUS_SPEAK) {
     }
     o->oPosY += o->oVelY;
-    if ((s16)o->oPosY > 10295.f) {
+    if ((s16)o->oPosY > 10220.f) {
         o->oAction = 4;
     }
+}
+
+void elevator_act_5(void) {
+    o->oVelY = 0;
 }
 
 void bhv_elevator_init(void) {
@@ -129,6 +133,7 @@ ObjActionFunc sElevatorActions[] = {
     elevator_act_2,
     elevator_act_3,
     elevator_act_4,
+    elevator_act_5,
 };
 
 void bhv_elevator_loop(void) {

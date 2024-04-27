@@ -36,10 +36,9 @@ business. I can't wait for\n\
 this trip to be over."))
 
 DEFINE_DIALOG(DIALOG_004, 1, 4, 95, 200, _("\
-Look I managed to get\n\
-an prototype of the\n\
-flying hat,\n\
-look at this!"))
+This place is really\n\
+relaxing, I really want to\n\
+live here."))
 
 DEFINE_DIALOG(DIALOG_005, 1, 3, 30, 200, _("\
 Great, I'm not getting\n\
@@ -52,12 +51,6 @@ allow them to swim\n\
 underwater faster,\n\
 and without worrying\n\
 about breathing!\n\
-While underwater, press [Z]\n\
-to stop and adjust your\n\
-direction, In order to\n\
-leave the water.\n\
-\n\
-\n\
 We suggest using an\n\
 upstream to launch\n\
 youself out of\n\
@@ -114,10 +107,10 @@ Maybe I should have\n\
 listened to him."))
 
 DEFINE_DIALOG(DIALOG_014, 1, 4, 30, 200, _("\
-Wow! Another Power Star!\n\
-Mario gains more courage\n\
-from the power of the\n\
-castle.\n\
+Wow! You got a Power Star!\n\
+\n\
+\n\
+\n\
 Do you want to Save?\n\
 \n\
 //You Bet//Not Now"))
@@ -126,47 +119,67 @@ DEFINE_DIALOG(DIALOG_015, 1, 6, 30, 200, _("\
 Welcome to my shop!\n\
 Although I'm not selling\n\
 anything yet.\n\
-I set up these pipes\n\
-so you can relive past\n\
+In the door behind me\n\
+i set up these pipes\n\
+so you can replay past\n\
 experiences!\n\
-If you managed to get and S\n\
-rank, an star will spawn\n\
-in front of the respective\n\
-map In the signs are the\n\
-requirements for the ranks.\n\
-Hope you enjoy the stay!"))
+The other door will take\n\
+you to the ending"))
 
-DEFINE_DIALOG(DIALOG_016, 1, 4, 30, 200, _("\
-This door is where all the\n\
-cut content was left,\n\
-believe me, you don't want\n\
-to see it."))
+DEFINE_DIALOG(DIALOG_016, 1, 6, 30, 200, _("\
+It's time for some good\n\
+old Credits!:\n\
+\n\
+\n\
+\n\
+\n\
+Textures:\n\
+- Super Mario 64\n\
+- Mario Party 1,2,3\n\
+- Banjo-Kazoie\n\
+- Mario Kart 64\n\
+- Donkey Kong 64\n\
+Music:\n\
+Mario Golf 64:\n\
+- Yoshi's Island\n\
+- Shy Guy International\n\
+Mario Party 3:\n\
+- Spiny Desert\n\
+- Creepy Cavern\n\
+- Sound Room\n\
+Mario Golf: TT:\n\
+- Speed Golf\n\
+- Shifting Sands 2\n\
+\n\
+Thanks to\n\
+arthurtilly for\n\
+the audio manager.\n\
+The HackerSM64 Team\n\
+for the great repo!\n\
+And to the \n\
+Simpleflips and the\n\
+Romhacking.com\n\
+discord servers.\n\
+\n\
+\n\
+\n\
+Thanks for playing!\n\
+-shinyquill"))
 
-DEFINE_DIALOG(DIALOG_017, 1, 4, 30, 200, _("\
-I'm the Big Bob-omb, lord\n\
-of all blasting matter,\n\
-king of ka-booms the\n\
-world over!\n\
-How dare you scale my\n\
-mountain? By what right\n\
-do you set foot on my\n\
-imperial mountaintop?\n\
-You may have eluded my\n\
-guards, but you'll never\n\
-escape my grasp...\n\
+DEFINE_DIALOG(DIALOG_017, 1, 6, 30, 200, _("\
+If you're reading this\n\
+that means there are no\n\
+extra stars, the plan\n\
+was to have around 5\n\
+stars total, but I'm\n\
+to tired.\n\
+I might update the hack\n\
+in the future, you can\n\
+still replay the levels\n\
 \n\
-...and you'll never take\n\
-away my Power Star. I\n\
-hereby challenge you,\n\
-Mario!\n\
-If you want the Star I\n\
-hold, you must prove\n\
-yourself in battle.\n\
 \n\
-Can you pick me up from\n\
-the back and hurl me to\n\
-this royal turf? I think\n\
-that you cannot!"))
+\n\
+Sorry :c"))
 
 DEFINE_DIALOG(DIALOG_018, 1, 4, 30, 200, _("\
 I'm sleeping because...\n\

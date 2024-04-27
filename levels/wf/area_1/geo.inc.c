@@ -3,11 +3,48 @@
 const GeoLayout wf_area_1_geo[] = {
 	GEO_NODE_START(),
 	GEO_OPEN_NODE(),
-		GEO_TRANSLATE_ROTATE_WITH_DL(LAYER_OPAQUE, -10228, 10087, 15242, 90, 0, -90, wf_dl_Level_mesh_layer_1),
+		GEO_SWITCH_CASE(5, geo_switch_area),
 		GEO_OPEN_NODE(),
-			GEO_DISPLAY_LIST(LAYER_TRANSPARENT, wf_dl_Level_mesh_layer_5),
+			GEO_BRANCH(1, wf_dl_1_Cave_geo),
+			GEO_BRANCH(1, wf_dl_2_Sand_geo),
+			GEO_BRANCH(1, wf_dl_3_Water_geo),
+			GEO_BRANCH(1, wf_dl_4_Lava_geo),
 		GEO_CLOSE_NODE(),
-		GEO_TRANSLATE_ROTATE_WITH_DL(LAYER_TRANSPARENT, -10228, 10087, 15242, 90, 0, -90, wf_dl_Wat_mesh_layer_5),
+	GEO_CLOSE_NODE(),
+	GEO_RETURN(),
+};
+const GeoLayout wf_dl_1_Cave_geo[] = {
+	GEO_NODE_START(),
+	GEO_OPEN_NODE(),
+		GEO_DISPLAY_LIST(LAYER_OPAQUE, wf_dl_Level_006_mesh_layer_1),
+		GEO_DISPLAY_LIST(LAYER_OPAQUE, wf_dl_No_Collision_004_mesh_layer_1),
+	GEO_CLOSE_NODE(),
+	GEO_RETURN(),
+};
+const GeoLayout wf_dl_2_Sand_geo[] = {
+	GEO_NODE_START(),
+	GEO_OPEN_NODE(),
+		GEO_DISPLAY_LIST(LAYER_OPAQUE, wf_dl_Level_007_mesh_layer_1),
+		GEO_DISPLAY_LIST(LAYER_OPAQUE, wf_dl_No_Collision_005_mesh_layer_1),
+	GEO_CLOSE_NODE(),
+	GEO_RETURN(),
+};
+const GeoLayout wf_dl_3_Water_geo[] = {
+	GEO_NODE_START(),
+	GEO_OPEN_NODE(),
+		GEO_DISPLAY_LIST(LAYER_OPAQUE, wf_dl_Level_mesh_layer_1),
+		GEO_DISPLAY_LIST(LAYER_TRANSPARENT, wf_dl_Level_mesh_layer_5),
+		GEO_DISPLAY_LIST(LAYER_OPAQUE, wf_dl_No_Collision_006_mesh_layer_1),
+		GEO_TRANSLATE_ROTATE_WITH_DL(LAYER_TRANSPARENT, -10167, 10082, 14637, 90, 0, -90, wf_dl_Wat_mesh_layer_5),
+		GEO_TRANSLATE_NODE_WITH_DL(LAYER_TRANSPARENT, -11812, -9181, -10829, wf_dl_Waterfall_003_mesh_layer_5),
+	GEO_CLOSE_NODE(),
+	GEO_RETURN(),
+};
+const GeoLayout wf_dl_4_Lava_geo[] = {
+	GEO_NODE_START(),
+	GEO_OPEN_NODE(),
+		GEO_DISPLAY_LIST(LAYER_OPAQUE, wf_dl_Level_005_mesh_layer_1),
+		GEO_DISPLAY_LIST(LAYER_OPAQUE, wf_dl_No_Collision_007_mesh_layer_1),
 	GEO_CLOSE_NODE(),
 	GEO_RETURN(),
 };
@@ -29,7 +66,7 @@ const GeoLayout wf_area_1[] = {
 				GEO_OPEN_NODE(),
 					GEO_BRANCH(1, wf_area_1_geo),
 					GEO_RENDER_OBJ(),
-					GEO_ASM(ENVFX_JETSTREAM_BUBBLES, geo_envfx_main),
+					GEO_ASM(ENVFX_MODE_NONE, geo_envfx_main),
 				GEO_CLOSE_NODE(),
 			GEO_CLOSE_NODE(),
 		GEO_CLOSE_NODE(),

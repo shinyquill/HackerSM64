@@ -29,6 +29,7 @@ struct SaveFile {
     // Note: the coordinates get set, but are never actually used, since the
     // cap can always be found in a fixed spot within the course
     u8 capLevel;
+    u8 beatenFinalLevel;
     u8 capArea;
     // Note: the coordinates get set, but are never actually used, since the
     // cap can always be found in a fixed spot within the course
@@ -144,6 +145,14 @@ enum StarFlags {
     STAR_FLAG_ACT_6         = (1 << 5), // 0x20
     STAR_FLAG_ACT_100_COINS = (1 << 6), // 0x40
     STAR_FLAG_LAST          = STAR_FLAG_ACT_100_COINS
+};
+
+enum DragonCoinFlags {
+    DRAGON_COIN_FLAGS_NONE     = (0 << 0), // 0x00
+    DRAGON_COIN_FLAG_1         = (1 << 0), // 0x01
+    DRAGON_COIN_FLAG_2         = (1 << 1), // 0x02
+    DRAGON_COIN_FLAG_3         = (1 << 2), // 0x04
+    DRAGON_COIN_FLAG_LAST      = DRAGON_COIN_FLAG_3
 };
 
 #define SAVE_FLAG_TO_STAR_FLAG(cmd) (((cmd) >> 24) & 0x7F)

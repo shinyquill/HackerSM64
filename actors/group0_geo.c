@@ -28,3 +28,6 @@
 #include "seesaw/geo.inc.c"
 #include "seesaw2/geo.inc.c"
 #include "elevator/geo.inc.c"
+#include "red_circle/geo.inc.c"
+#include "dragon_coin/geo.inc.c"
+#include "fall_piece_temple/geo.inc.c"

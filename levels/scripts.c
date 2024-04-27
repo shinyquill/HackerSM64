@@ -122,6 +122,9 @@ const LevelScript level_main_scripts_entry[] = {
     LOAD_MODEL_FROM_GEO(MODEL_SEESAW,                  seesaw_geo),
     LOAD_MODEL_FROM_GEO(MODEL_SEESAW2,                  seesaw2_geo),
     LOAD_MODEL_FROM_GEO(MODEL_ELEVATOR,                  elevator_geo),
+    LOAD_MODEL_FROM_GEO(MODEL_RED_CIRCLE,                  red_circle_geo),
+    LOAD_MODEL_FROM_GEO(MODEL_DRAGON_COIN,                  dragon_coin_geo),
+    LOAD_MODEL_FROM_GEO(MODEL_FALL_PIECE_TEMPLE,                  fall_piece_temple_geo),
 #ifdef IA8_30FPS_COINS
     LOAD_MODEL_FROM_GEO(MODEL_SILVER_COIN,             silver_coin_geo),
     LOAD_MODEL_FROM_GEO(MODEL_SILVER_COIN_NO_SHADOW,   silver_coin_no_shadow_geo),

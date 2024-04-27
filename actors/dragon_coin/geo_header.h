@@ -1,0 +1,13 @@
+extern const GeoLayout dragon_coin_geo[];
+extern Lights1 dragon_coin_f3dlite_material_lights;
+extern Lights1 dragon_coin_f3dlite_material_081_lights;
+extern u8 dragon_coin_DragonCoin_ci4[];
+extern u8 dragon_coin_DragonCoin_pal_rgba16[];
+extern Vtx dragon_coin_000_displaylist_mesh_layer_1_vtx_0[366];
+extern Gfx dragon_coin_000_displaylist_mesh_layer_1_tri_0[];
+extern Vtx dragon_coin_000_displaylist_mesh_layer_1_vtx_1[83];
+extern Gfx dragon_coin_000_displaylist_mesh_layer_1_tri_1[];
+extern Gfx mat_dragon_coin_f3dlite_material[];
+extern Gfx mat_dragon_coin_f3dlite_material_081[];
+extern Gfx mat_revert_dragon_coin_f3dlite_material_081[];
+extern Gfx dragon_coin_000_displaylist_mesh_layer_1[];

@@ -3,7 +3,32 @@
 const GeoLayout castle_inside_area_1_geo[] = {
 	GEO_NODE_START(),
 	GEO_OPEN_NODE(),
-		GEO_TRANSLATE_NODE_WITH_DL(LAYER_OPAQUE, -61, 5, -3081, castle_inside_dl_Plane_006_mesh_layer_1),
+		GEO_SWITCH_CASE(3, geo_switch_area),
+		GEO_OPEN_NODE(),
+			GEO_BRANCH(1, castle_inside_dl_1_Main_geo),
+			GEO_BRANCH(1, castle_inside_dl_2_Replay_geo),
+		GEO_CLOSE_NODE(),
+		GEO_TRANSLATE_NODE(LAYER_OPAQUE, -11103, 0, -3459),
+	GEO_CLOSE_NODE(),
+	GEO_RETURN(),
+};
+const GeoLayout castle_inside_dl_1_Main_geo[] = {
+	GEO_NODE_START(),
+	GEO_OPEN_NODE(),
+		GEO_TRANSLATE_NODE(LAYER_OPAQUE, -11103, 0, -3459),
+		GEO_OPEN_NODE(),
+			GEO_TRANSLATE_NODE_WITH_DL(LAYER_OPAQUE, 11103, 0, 3459, castle_inside_dl_Plane_016_mesh_layer_1),
+		GEO_CLOSE_NODE(),
+	GEO_CLOSE_NODE(),
+	GEO_RETURN(),
+};
+const GeoLayout castle_inside_dl_2_Replay_geo[] = {
+	GEO_NODE_START(),
+	GEO_OPEN_NODE(),
+		GEO_TRANSLATE_NODE(LAYER_OPAQUE, -11103, 0, -3459),
+		GEO_OPEN_NODE(),
+			GEO_TRANSLATE_NODE_WITH_DL(LAYER_OPAQUE, 11103, 0, 3459, castle_inside_dl_Plane_014_mesh_layer_1),
+		GEO_CLOSE_NODE(),
 	GEO_CLOSE_NODE(),
 	GEO_RETURN(),
 };

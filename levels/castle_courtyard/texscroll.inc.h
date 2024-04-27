@@ -1,0 +1,3 @@
+extern void scroll_castle_courtyard_dl_Plane_009_mesh_layer_5_vtx_0();
+extern void scroll_castle_courtyard_dl_Plane_017_mesh_layer_5_vtx_0();
+extern void scroll_castle_courtyard();

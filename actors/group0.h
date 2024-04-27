@@ -410,4 +410,22 @@ extern const struct Animation *const ukiki_seg5_anims_05015784[];
 
 #include "elevator/geo_header.h"
 
+#include "red_circle/collision_header.h"
+
+#include "red_circle/geo_header.h"
+
+#include "dragon_coin/geo_header.h"
+
+#include "fall_piece_temple/geo_header.h"
+
+#include "fall_piece_temple_1/collision_header.h"
+
+#include "fall_piece_temple_2/collision_header.h"
+
+#include "fall_piece_temple_3/collision_header.h"
+
+#include "fall_piece_temple_4/collision_header.h"
+
+#include "fall_piece_temple_5/collision_header.h"
+
 #endif

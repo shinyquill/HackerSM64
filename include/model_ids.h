@@ -547,8 +547,8 @@
 #define MODEL_SILVER_COIN                 0xE2        // silver_coin_geo
 #define MODEL_SILVER_COIN_NO_SHADOW       0xE3        // silver_coin_no_shadow_geo
 #endif
-#define MODEL_MUSHROOM_TOP       0xE2        // silver_coin_no_shadow_geo
-#define MODEL_TRUNK              0xE3        // silver_coin_no_shadow_geo
+#define MODEL_MUSHROOM_TOP       0xEE        // silver_coin_no_shadow_geo
+#define MODEL_TRUNK              0xEF        // silver_coin_no_shadow_geo
 #define MODEL_TOAD                        0xE4        // toad_geo
 #define MODEL_FLYING_BOOST                        0xE5        // toad_geo
 #define MODEL_BANANA                        0xE5        // toad_geo
@@ -558,6 +558,9 @@
 #define MODEL_SEESAW2                        0xE9        // toad_geo
 #define MODEL_ELEVATOR                        0xEA        // toad_geo
 #define MODEL_HUB                         0xEB        // invisible_bowser_accessory_geo
+#define MODEL_RED_CIRCLE                         0xEC        // invisible_bowser_accessory_geo
+#define MODEL_DRAGON_COIN                        0xED        // invisible_bowser_accessory_geo
+#define MODEL_FALL_PIECE_TEMPLE                       0xF0        // invisible_bowser_accessory_geo
 
 // Menu Models (overwrites Level Geometry IDs)
 #define MODEL_MAIN_MENU_MARIO_SAVE_BUTTON         MODEL_LEVEL_GEOMETRY_03   // main_menu_geo_0001D0

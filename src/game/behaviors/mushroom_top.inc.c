@@ -39,6 +39,7 @@ void bhv_mushroom_top_init(void) {
 void bhv_mushroom_top_loop(void) {
     if  (gMarioObject->platform == o && o->oMushroomAnimate == 0 && gMarioState->floor->type == SURFACE_BOUNCE){
         gMarioState->action = ACT_MUSH_BOUNCE;
+        play_sound(SOUND_GENERAL_CUSTOM_SPRING, gGlobalSoundSource);
         play_sound_if_no_flag(gMarioState, SOUND_MARIO_YAHOO, MARIO_MARIO_SOUND_PLAYED);
         update_mario_sound_and_camera(gMarioState);
         gMarioState->marioObj->header.gfx.animInfo.animFrame = 0;

@@ -6208,3 +6208,64 @@ const BehaviorScript bhvAnotherElavator[] = {
         CALL_NATIVE(load_object_collision_model),
     END_LOOP(),
 };
+
+const BehaviorScript bhvRedRing[] = {
+    BEGIN(OBJ_LIST_LEVEL),
+    OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
+    SET_HITBOX_WITH_OFFSET(/*Radius*/ 200, /*Height*/ 550, /*Downwards offset*/ 175),
+    // SET_FLOAT(oDrawingDistance, 20000),
+    // SET_FLOAT(oCollisionDistance, 5000),
+    SCALE(/*Unused*/ 0, /*Field*/ 50),
+    SET_INT(oIntangibleTimer, 0),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_red_circle_loop),
+    END_LOOP(),
+};
+
+const BehaviorScript bhvHiddenRedCoin[] = {
+    BEGIN(OBJ_LIST_LEVEL),
+    SET_INT(oInteractType, INTERACT_COIN),
+    OR_INT(oFlags, (OBJ_FLAG_ACTIVE_FROM_AFAR | OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    BILLBOARD(),
+    // SET_HITBOX(/*Radius*/ 100, /*Height*/ 64),
+    // SET_INT(oDamageOrCoinValue, 5),
+    SET_INT(oIntangibleTimer, 0),
+    SET_INT(oAnimState, OBJ_ANIM_STATE_INIT_ANIM),
+    CALL_NATIVE(bhv_hidden_red_coin_init),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_hidden_red_coin_loop),
+        // CALL_NATIVE(bhv_hidden_blue_coin_loop),
+        ADD_INT(oAnimState, 1),
+    END_LOOP(),
+};
+
+const BehaviorScript bhvDragonCoin[] = {
+    BEGIN(OBJ_LIST_LEVEL),
+    OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
+    SET_HITBOX(/*Radius*/ 100, /*Height*/ 150),
+    SET_INT(oIntangibleTimer, 0),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_dragon_coin_loop),
+    END_LOOP(),
+};
+
+const BehaviorScript bhvHiddenDragonCoin[] = {
+    BEGIN(OBJ_LIST_LEVEL),
+    OR_INT(oFlags, (OBJ_FLAG_PERSISTENT_RESPAWN | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    CALL_NATIVE(bhv_hidden_red_coin_dragon_coin_init),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_hidden_red_coin_dragon_coin_loop),
+    END_LOOP(),
+};
+
+const BehaviorScript bhvFallingPieceTemple[] = {
+    BEGIN(OBJ_LIST_SURFACE),
+    OR_INT(oFlags, (OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_SET_FACE_YAW_TO_MOVE_YAW | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    SET_FLOAT(oDrawingDistance, 20000),
+    SET_FLOAT(oCollisionDistance, 5000),
+    CALL_NATIVE(bhv_falling_piece_temple_init),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_falling_piece_temple_loop),
+        CALL_NATIVE(load_object_collision_model),
+    END_LOOP(),
+};

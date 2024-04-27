@@ -52,6 +52,7 @@ enum SeqId {
     SEQ_ESCAPE,  // 0x27
     SEQ_TEMPLEHUB,  // 0x28
     SEQ_CREDITS,  // 0x29
+    SEQ_SHOP,  // 0x2A
     SEQ_COUNT,
 };
 

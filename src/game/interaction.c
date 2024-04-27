@@ -933,34 +933,34 @@ u32 interact_warp_door(struct MarioState *m, UNUSED u32 interactType, struct Obj
 
     if (m->action == ACT_WALKING || m->action == ACT_DECELERATING) {
 #ifndef UNLOCK_ALL
-        if (warpDoorId == 1 && !(saveFlags & SAVE_FLAG_UNLOCKED_UPSTAIRS_DOOR)) {
-            if (!(saveFlags & SAVE_FLAG_HAVE_KEY_2)) {
-                if (!sDisplayingDoorText) {
-                    set_mario_action(m, ACT_READING_AUTOMATIC_DIALOG,
-                                     (saveFlags & SAVE_FLAG_HAVE_KEY_1) ? DIALOG_023 : DIALOG_022);
-                }
-                sDisplayingDoorText = TRUE;
+        // if (warpDoorId == 1 && !(saveFlags & SAVE_FLAG_UNLOCKED_UPSTAIRS_DOOR)) {
+        //     if (!(saveFlags & SAVE_FLAG_HAVE_KEY_2)) {
+        //         if (!sDisplayingDoorText) {
+        //             set_mario_action(m, ACT_READING_AUTOMATIC_DIALOG,
+        //                              (saveFlags & SAVE_FLAG_HAVE_KEY_1) ? DIALOG_023 : DIALOG_022);
+        //         }
+        //         sDisplayingDoorText = TRUE;
 
-                return FALSE;
-            }
+        //         return FALSE;
+        //     }
 
-            doorAction = ACT_UNLOCKING_KEY_DOOR;
-        }
+        //     doorAction = ACT_UNLOCKING_KEY_DOOR;
+        // }
 
-        if (warpDoorId == 2 && !(saveFlags & SAVE_FLAG_UNLOCKED_BASEMENT_DOOR)) {
-            if (!(saveFlags & SAVE_FLAG_HAVE_KEY_1)) {
-                if (!sDisplayingDoorText) {
-                    // Moat door skip was intended confirmed
-                    set_mario_action(m, ACT_READING_AUTOMATIC_DIALOG,
-                                     (saveFlags & SAVE_FLAG_HAVE_KEY_2) ? DIALOG_023 : DIALOG_022);
-                }
-                sDisplayingDoorText = TRUE;
+        // if (warpDoorId == 2 && !(saveFlags & SAVE_FLAG_UNLOCKED_BASEMENT_DOOR)) {
+        //     if (!(saveFlags & SAVE_FLAG_HAVE_KEY_1)) {
+        //         if (!sDisplayingDoorText) {
+        //             // Moat door skip was intended confirmed
+        //             set_mario_action(m, ACT_READING_AUTOMATIC_DIALOG,
+        //                              (saveFlags & SAVE_FLAG_HAVE_KEY_2) ? DIALOG_023 : DIALOG_022);
+        //         }
+        //         sDisplayingDoorText = TRUE;
 
-                return FALSE;
-            }
+        //         return FALSE;
+        //     }
 
-            doorAction = ACT_UNLOCKING_KEY_DOOR;
-        }
+        //     doorAction = ACT_UNLOCKING_KEY_DOOR;
+        // }
 #endif
 
         if (m->action == ACT_WALKING || m->action == ACT_DECELERATING) {
@@ -1004,11 +1004,11 @@ u32 get_door_save_file_flag(struct Object *door) {
 u32 interact_door(struct MarioState *m, UNUSED u32 interactType, struct Object *obj) {
     s16 requiredNumStars = (obj->oBehParams >> 24);
 #ifndef UNLOCK_ALL
-    s16 numStars = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
+    // s16 numStars = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
 #endif
     if (m->action == ACT_WALKING || m->action == ACT_DECELERATING) {
 #ifndef UNLOCK_ALL
-        if (numStars >= requiredNumStars) {
+        // if (numStars >= requiredNumStars) {
 #endif
             u32 actionArg = should_push_or_pull_door(m, obj);
             u32 enterDoorAction;
@@ -1020,7 +1020,7 @@ u32 interact_door(struct MarioState *m, UNUSED u32 interactType, struct Object *
             }
 
 #ifndef UNLOCK_ALL
-            u32 doorSaveFileFlag = get_door_save_file_flag(obj);
+            // u32 doorSaveFileFlag = get_door_save_file_flag(obj);
 #endif
             m->interactObj = obj;
             m->usedObj     = obj;
@@ -1030,29 +1030,29 @@ u32 interact_door(struct MarioState *m, UNUSED u32 interactType, struct Object *
             }
 
 #ifndef UNLOCK_ALL
-            if (doorSaveFileFlag != 0 && !(save_file_get_flags() & doorSaveFileFlag)) {
-                enterDoorAction = ACT_UNLOCKING_STAR_DOOR;
-            }
+            // if (doorSaveFileFlag != 0 && !(save_file_get_flags() & doorSaveFileFlag)) {
+            //     enterDoorAction = ACT_UNLOCKING_STAR_DOOR;
+            // }
 #endif
             return set_mario_action(m, enterDoorAction, actionArg);
 #ifndef UNLOCK_ALL
-        } else if (!sDisplayingDoorText) {
-            u32 text = DIALOG_022 << 16;
+        // } else if (!sDisplayingDoorText) {
+        //     u32 text = DIALOG_022 << 16;
 
-            switch (requiredNumStars) {
-                case  1: text = DIALOG_024 << 16; break;
-                case  3: text = DIALOG_025 << 16; break;
-                case  8: text = DIALOG_026 << 16; break;
-                case 30: text = DIALOG_027 << 16; break;
-                case 50: text = DIALOG_028 << 16; break;
-                case 70: text = DIALOG_029 << 16; break;
-            }
+        //     switch (requiredNumStars) {
+        //         case  1: text = DIALOG_024 << 16; break;
+        //         case  3: text = DIALOG_025 << 16; break;
+        //         case  8: text = DIALOG_026 << 16; break;
+        //         case 30: text = DIALOG_027 << 16; break;
+        //         case 50: text = DIALOG_028 << 16; break;
+        //         case 70: text = DIALOG_029 << 16; break;
+        //     }
 
-            text += requiredNumStars - numStars;
+        //     text += requiredNumStars - numStars;
 
-            sDisplayingDoorText = TRUE;
-            return set_mario_action(m, ACT_READING_AUTOMATIC_DIALOG, text);
-        }
+        //     sDisplayingDoorText = TRUE;
+        //     return set_mario_action(m, ACT_READING_AUTOMATIC_DIALOG, text);
+        // }
 #endif
     } else if (m->action == ACT_IDLE && sDisplayingDoorText == TRUE && requiredNumStars == 70) {
         m->interactObj = obj;
@@ -1923,6 +1923,14 @@ void pss_begin_slide(UNUSED struct MarioState *m) {
             }
             break;
         }
+        case LEVEL_JRB:{
+            if (!(gHudDisplay.flags & HUD_DISPLAY_FLAG_TIMER)) {
+                level_control_timer(TIMER_CONTROL_SHOW);
+                level_control_timer(TIMER_CONTROL_START);
+                sThirdSlideStarted = TRUE;
+            }
+            break;
+        }
     }
 }
 
@@ -1942,25 +1950,58 @@ void pss_end_slide(struct MarioState *m) {
         case LEVEL_BOB:{
             if (sFirstSlideStarted) {
                 u16 slideTime = level_control_timer(TIMER_CONTROL_STOP);
+                // if (save_file_get_beaten()){
+                //     sFirstSlideStarted = FALSE;
+                //     level_trigger_warp(gMarioState, WARP_OP_REPLAY);
+                //     save_file_finish_race(m->numCoins, slideTime); 
+                //     save_file_do_save(gCurrSaveFileNum - 1);
+                // } else {
+                    sFirstSlideStarted = FALSE;
+                    level_trigger_warp(gMarioState, WARP_OP_FINISH);
+                    save_file_finish_race(m->numCoins, slideTime); 
+                    save_file_do_save(gCurrSaveFileNum - 1);
+                // }
                 // if (slideTime < 630) {
                 //     m->marioObj->oBehParams = (1 << 24);
                 //     spawn_default_star(-6358.0f, -4300.0f, 4700.0f);
                 // }
-                sFirstSlideStarted = FALSE;
-                level_trigger_warp(gMarioState, WARP_OP_FINISH);
+
             }
             break;
         }
         case LEVEL_WF:{
             if (sSecondSlideStarted) {
                 u16 slideTime = level_control_timer(TIMER_CONTROL_STOP);
-                // if (slideTime < 630) {
-                //     m->marioObj->oBehParams = (1 << 24);
-                //     spawn_default_star(-6358.0f, -4300.0f, 4700.0f);
+                // if (save_file_get_beaten()){
+                //     sSecondSlideStarted = FALSE;
+                //     level_trigger_warp(gMarioState, WARP_OP_REPLAY);
+                //     save_file_finish_race(m->numCoins, slideTime); 
+                //     save_file_do_save(gCurrSaveFileNum - 1);
+                // } else {
+                    sSecondSlideStarted = FALSE;
+                    level_trigger_warp(gMarioState, WARP_OP_FINISH);
+                    save_file_finish_race(m->numCoins, slideTime); 
+                    save_file_do_save(gCurrSaveFileNum - 1);
                 // }
-                sSecondSlideStarted = FALSE;
-                level_trigger_warp(gMarioState, WARP_OP_FINISH);
 
+            }
+            break;
+        }
+        case LEVEL_JRB:{
+            if (sThirdSlideStarted) {
+                u16 slideTime = level_control_timer(TIMER_CONTROL_STOP);
+                // if (save_file_get_beaten()){
+                //     sThirdSlideStarted = FALSE;
+                //     level_trigger_warp(gMarioState, WARP_OP_REPLAY);
+                //     save_file_finish_race(m->numCoins, slideTime); 
+                //     save_file_do_save(gCurrSaveFileNum - 1);
+                // } else {
+                    save_file_set_beaten();
+                    sThirdSlideStarted = FALSE;
+                    level_trigger_warp(gMarioState, WARP_OP_FINISH);
+                    save_file_finish_race(m->numCoins, slideTime); 
+                    save_file_do_save(gCurrSaveFileNum - 1);
+                // }
             }
             break;
         }

@@ -121,7 +121,7 @@ endif
 
 # TEXT ENGINES
 #   s2dex_text_engine - Text Engine by someone2639
-TEXT_ENGINE := s2dex_text_engine
+TEXT_ENGINE := none
 $(eval $(call validate-option,TEXT_ENGINE,none s2dex_text_engine))
 
 ifeq ($(TEXT_ENGINE), s2dex_text_engine)
@@ -225,7 +225,7 @@ endif
 # allowing for usage of CEN64 (and possibly Project64) to print messages to terminal.
 #   1 - includes code in ROM
 #   0 - does not
-ISVPRINT ?= 1
+ISVPRINT ?= 0
 $(eval $(call validate-option,ISVPRINT,0 1))
 ifeq ($(ISVPRINT),1)
   DEFINES += ISVPRINT=1

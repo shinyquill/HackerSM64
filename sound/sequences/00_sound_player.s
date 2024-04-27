@@ -2805,6 +2805,12 @@ sound_ref .sound_general_boing1
 sound_ref .sound_general_boing2
 sound_ref .sound_general_yoshi_walk
 sound_ref .sound_general_enemy_alert1
+sound_ref .sound_general_custom_toad_scream
+sound_ref .sound_general_custom_toad_scream_2
+sound_ref .sound_general_custom_dragon_coin
+sound_ref .sound_general_custom_red_circle
+sound_ref .sound_general_custom_boing
+sound_ref .sound_general_custom_slip
 
 .sound_general_activate_cap_switch:
 chan_setbank 5
@@ -4385,6 +4391,66 @@ chan_setval 35
 chan_call .delay
 chan_setvibratoextent 0xff
 chan_end
+
+.sound_general_custom_toad_scream:
+chan_setbank 5
+chan_setinstr 16
+chan_setlayer 0, .layer_1337
+chan_end
+
+.layer_1337:
+layer_note1 39, 0x7f, 127
+layer_end
+
+.sound_general_custom_toad_scream_2:
+chan_setbank 5
+chan_setinstr 17
+chan_setlayer 0, .layer_1339
+chan_end
+
+.layer_1339:
+layer_note1 39, 0x7f, 127
+layer_end
+
+.sound_general_custom_dragon_coin:
+chan_setbank 5
+chan_setinstr 18
+chan_setlayer 0, .layer_1340
+chan_end
+
+.layer_1340:
+layer_note1 39, 0x7f, 127
+layer_end
+
+.sound_general_custom_red_circle:
+chan_setbank 5
+chan_setinstr 19
+chan_setlayer 0, .layer_1341
+chan_end
+
+.layer_1341:
+layer_note1 39, 0x7f, 127
+layer_end
+
+.sound_general_custom_boing:
+chan_setbank 5
+chan_setinstr 20
+chan_setlayer 0, .layer_1342
+chan_end
+
+.layer_1342:
+layer_note1 39, 0x7f, 127
+layer_end
+
+.sound_general_custom_slip:
+chan_setbank 5
+chan_setinstr 21
+chan_setlayer 0, .layer_1343
+chan_end
+
+.layer_1343:
+layer_note1 39, 0x7f, 127
+layer_end
 
 .layer_1AE9:
 layer_transpose 1

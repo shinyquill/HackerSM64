@@ -21,6 +21,7 @@
 #include "game/rumble_init.h"
 #include "sm64.h"
 #include "text_strings.h"
+#include "levels/menu/hub/texscroll.inc.h"
 
 #include "eu_translation.h"
 #if MULTILANG
@@ -184,7 +185,7 @@ void beh_yellow_background_menu_init(void) {
  * Properly scales the background in the main menu.
  */
 void beh_yellow_background_menu_loop(void) {
-    // scroll_textures_common1();
+    scroll_textures_common1();
     // cur_obj_scale(9.0f);
 }
 
