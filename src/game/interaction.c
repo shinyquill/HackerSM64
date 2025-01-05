@@ -24,6 +24,7 @@
 #include "sound_init.h"
 #include "rumble_init.h"
 #include "config.h"
+#include "ingame_menu.h"
 
 u8  sDelayInvincTimer;
 s16 sInvulnerable;
@@ -1880,7 +1881,9 @@ void check_death_barrier(struct MarioState *m) {
     }
     
     if (m->pos[1] < m->floorHeight + 1536.0f) {
-        if (level_trigger_warp(m, WARP_OP_WARP_FLOOR) == 20 && !(m->flags & MARIO_FALL_SOUND_PLAYED)) {
+        if (m->action & ACT_FLAG_SWIMMING) {
+            set_mario_action(m, ACT_DROWNING, 0);
+        } else if (level_trigger_warp(m, WARP_OP_WARP_FLOOR) == 20 && !(m->flags & MARIO_FALL_SOUND_PLAYED)) {
             play_sound(SOUND_MARIO_WAAAOOOW, m->marioObj->header.gfx.cameraToObject);
         }
     }
@@ -1945,63 +1948,33 @@ void pss_end_slide(struct MarioState *m) {
     gWarpCheckpoint.courseNum = COURSE_NONE;
     gWarpCheckpoint.warpNode = 0x00;
     gWarpCheckpoint.areaNum = 0;
+    gMarioState->respawnCheckpoint = FALSE;
     //! This flag isn't set on death or level entry, allowing double star spawn
     switch(gCurrLevelNum){
         case LEVEL_BOB:{
             if (sFirstSlideStarted) {
                 u16 slideTime = level_control_timer(TIMER_CONTROL_STOP);
-                // if (save_file_get_beaten()){
-                //     sFirstSlideStarted = FALSE;
-                //     level_trigger_warp(gMarioState, WARP_OP_REPLAY);
-                //     save_file_finish_race(m->numCoins, slideTime); 
-                //     save_file_do_save(gCurrSaveFileNum - 1);
-                // } else {
-                    sFirstSlideStarted = FALSE;
-                    level_trigger_warp(gMarioState, WARP_OP_FINISH);
-                    save_file_finish_race(m->numCoins, slideTime); 
-                    save_file_do_save(gCurrSaveFileNum - 1);
-                // }
-                // if (slideTime < 630) {
-                //     m->marioObj->oBehParams = (1 << 24);
-                //     spawn_default_star(-6358.0f, -4300.0f, 4700.0f);
-                // }
-
+                sFirstSlideStarted = FALSE;
+                set_menu_mode(MENU_MODE_RESULTS);
+                gSaveOptSelectIndex = MENU_OPT_NONE;
             }
             break;
         }
         case LEVEL_WF:{
             if (sSecondSlideStarted) {
                 u16 slideTime = level_control_timer(TIMER_CONTROL_STOP);
-                // if (save_file_get_beaten()){
-                //     sSecondSlideStarted = FALSE;
-                //     level_trigger_warp(gMarioState, WARP_OP_REPLAY);
-                //     save_file_finish_race(m->numCoins, slideTime); 
-                //     save_file_do_save(gCurrSaveFileNum - 1);
-                // } else {
-                    sSecondSlideStarted = FALSE;
-                    level_trigger_warp(gMarioState, WARP_OP_FINISH);
-                    save_file_finish_race(m->numCoins, slideTime); 
-                    save_file_do_save(gCurrSaveFileNum - 1);
-                // }
-
+                sSecondSlideStarted = FALSE;
+                set_menu_mode(MENU_MODE_RESULTS);
+                gSaveOptSelectIndex = MENU_OPT_NONE;
             }
             break;
         }
         case LEVEL_JRB:{
             if (sThirdSlideStarted) {
                 u16 slideTime = level_control_timer(TIMER_CONTROL_STOP);
-                // if (save_file_get_beaten()){
-                //     sThirdSlideStarted = FALSE;
-                //     level_trigger_warp(gMarioState, WARP_OP_REPLAY);
-                //     save_file_finish_race(m->numCoins, slideTime); 
-                //     save_file_do_save(gCurrSaveFileNum - 1);
-                // } else {
-                    save_file_set_beaten();
-                    sThirdSlideStarted = FALSE;
-                    level_trigger_warp(gMarioState, WARP_OP_FINISH);
-                    save_file_finish_race(m->numCoins, slideTime); 
-                    save_file_do_save(gCurrSaveFileNum - 1);
-                // }
+                sThirdSlideStarted = FALSE;
+                set_menu_mode(MENU_MODE_RESULTS);
+                gSaveOptSelectIndex = MENU_OPT_NONE;
             }
             break;
         }

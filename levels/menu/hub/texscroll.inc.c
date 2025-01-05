@@ -1,11 +1,11 @@
-void scroll_hub_000_displaylist_mesh_layer_5_vtx_1() {
+void scroll_hub_000_displaylist_mesh_layer_1_vtx_18() {
 	int i = 0;
 	int count = 288;
 	int height = 32 * 0x20;
 
 	static int currentY = 0;
 	int deltaY;
-	Vtx *vertices = segmented_to_virtual(hub_000_displaylist_mesh_layer_5_vtx_1);
+	Vtx *vertices = segmented_to_virtual(hub_000_displaylist_mesh_layer_1_vtx_18);
 
 	deltaY = (int)(-2.0 * 0x20) % height;
 
@@ -20,5 +20,5 @@ void scroll_hub_000_displaylist_mesh_layer_5_vtx_1() {
 }
 
 void scroll_actor_geo_hub() {
-	scroll_hub_000_displaylist_mesh_layer_5_vtx_1();
+	scroll_hub_000_displaylist_mesh_layer_1_vtx_18();
 };

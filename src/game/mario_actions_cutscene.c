@@ -222,7 +222,7 @@ s32 get_star_collection_dialog(struct MarioState *m) {
     }
 
     m->prevNumStarsForDialog = m->numStars;
-    return dialogID;
+    return 0;
 }
 
 // save menu handler

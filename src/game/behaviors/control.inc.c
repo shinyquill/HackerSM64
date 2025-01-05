@@ -90,16 +90,16 @@ void bhv_falling_rock_loop(void){
             }
             break;
         case 1:
-            cur_obj_shake_screen(SHAKE_POS_SMALL);
-            cur_obj_play_sound_2(SOUND_GENERAL_WALL_EXPLOSION);
+            cur_obj_shake_screen(2);
+            cur_obj_play_sound_2(SOUND_OBJ_POUNDING1);
             spawn_mist_particles_variable(0, 0, 80.0f);
             spawn_triangle_break_particles(30, MODEL_DIRT_ANIMATION, 3.0f, TINY_DIRT_PARTICLE_ANIM_STATE_YELLOW);
             o->oAction = 3;
             break;
         case 2:
             o->oVelY = 0.0f;
-            cur_obj_shake_screen(SHAKE_POS_SMALL);
-            cur_obj_play_sound_2(SOUND_GENERAL_WALL_EXPLOSION);
+            cur_obj_shake_screen(2);
+            cur_obj_play_sound_2(SOUND_OBJ_POUNDING1);
             spawn_mist_particles_variable(0, 100, 80.0f);
             spawn_triangle_break_particles(30, MODEL_DIRT_ANIMATION, 3.0f, TINY_DIRT_PARTICLE_ANIM_STATE_YELLOW);
             cur_obj_become_intangible();
@@ -138,9 +138,15 @@ void bhv_falling_piece_temple_init(void){
 void bhv_falling_piece_temple_loop(void){
     f32 dist;
     struct Object *falling = cur_obj_find_nearest_object_with_behavior(bhvFallingRock, &dist);
+    // if (lateral_dist_between_objects(o, gMarioObject) < 7000.f){
+    //     print_text_fmt_int(20, (SCREEN_HEIGHT - 64), "o->oAction %d",(s16)o->oAction);
+    //     print_text_fmt_int(20, (SCREEN_HEIGHT - 80), "falling->oAction %d",(s16)falling->oAction);
+    //     print_text_fmt_int(20, (SCREEN_HEIGHT - 96), "dist %d",(s16)dist);
+    //     // print_text_fmt_int(20, (SCREEN_HEIGHT - 80), "PosY %d", (s16)gMarioState->floor->type == SURFACE_ANTI_GRAVITY);
+    // }
     switch(o->oAction){
         case 0:
-            if (dist < 1000){
+            if (dist < 1300){
                 falling->oAction = 2;
                 o->oAction = 1;
             }
@@ -148,6 +154,7 @@ void bhv_falling_piece_temple_loop(void){
         case 1:
             cur_obj_become_intangible();
             o->oVelY -= 2.0f;
+            cur_obj_shake_screen(2);
             o->oPosY += o->oVelY;
             if (o->oPosY < o->oHomeY - 600){
                 mark_obj_for_deletion(o);
@@ -157,6 +164,91 @@ void bhv_falling_piece_temple_loop(void){
     }
 }
 
-void bhv_escape_temple_loop(void){
-    
+void bhv_falling_piece_init(void){
+    s32 behavior = GET_BPARAM2(o->oBehParams);
+    o->oAnimState = behavior;
+}
+
+void bhv_falling_piece_loop(void){
+    s32 behavior = GET_BPARAM2(o->oBehParams);
+    f32 dist = 3500.f, dist2 = 400.f;
+    if (behavior > 1){
+        dist = 1500.f;
+        dist2 = 1300.f;
+    }
+    switch(o->oAction){
+        case 0:
+            if (lateral_dist_between_objects(o, gMarioObject) < dist){
+                o->oAction = 1;
+            }
+            break;
+        case 1:
+            cur_obj_become_intangible();
+            o->oVelY -= 3.0f;
+            cur_obj_shake_screen(1);
+            o->oPosY += o->oVelY;
+            if (o->oPosY < o->oHomeY - dist2){
+                mark_obj_for_deletion(o);
+            }
+            break;  
+    }
+}
+
+void bhv_testing_init(void) {
+}
+
+void bhv_testing_loop(void) {
+    o->oFaceAngleYaw += 0x800;
+    switch(o->oAction){
+        case 0:
+            if (obj_check_if_collided_with_object(o, gMarioObject)) {
+                cur_obj_shake_screen(2);
+                cur_obj_play_sound_2(SOUND_OBJ_POUNDING1);
+                o->oAction = 1;               
+            }
+            break;
+        case 1:
+            if (o->oTimer < 8){
+                spawn_object(o, MODEL_SPARKLES, bhvCoinSparklesSpawner);
+                o->oFaceAngleYaw += 0x1600;
+                o->oPosY += 10;
+            } else {
+                mark_obj_for_deletion(o);
+            }
+            break;
+    }
+
+}
+
+void bhv_spawning_ranking_star_init(void){
+    o->oStarChild = NULL;
+}
+
+void bhv_spawning_ranking_star_loop(void){
+    s32 behavior = GET_BPARAM1(o->oBehParams);
+    s16 levelNum = 0;
+    if (lateral_dist_between_objects(o, gMarioObject) < 400.f && o->oStarChild == NULL){
+        switch(behavior){
+            case 1: {
+                levelNum = LEVEL_BOB;
+                break;
+                }
+            case 2: {
+                levelNum = LEVEL_WF;
+                break;
+                }
+            case 3: {
+                levelNum = LEVEL_JRB;
+                break;
+                }
+        }
+        s32 coins = save_file_get_course_coin_score(gCurrSaveFileNum - 1, behavior - 1);
+        u16 timer = save_file_get_course_time(gCurrSaveFileNum - 1, behavior - 1);
+        s16 checks = calculate_rank(levelNum, timer, coins);
+
+
+        if (checks == 4){
+            o->oStarChild = bhv_spawn_star_ranking_no_level_exit(behavior);
+        }
+    }
 }

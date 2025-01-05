@@ -103,28 +103,31 @@ Gfx *geo_draw_mario_head_goddard(s32 callContext, struct GraphNode *node, UNUSED
 #endif
 
 static void toad_message_faded(void) {
-    if (o->oDistanceToMario > 700.0f) {
-        o->oToadMessageRecentlyTalked = FALSE;
-    }
-    if (!o->oToadMessageRecentlyTalked && o->oDistanceToMario < 600.0f) {
+    // if (o->oDistanceToMario > 700.0f) {
+    //     o->oToadMessageRecentlyTalked = FALSE;
+    // }
+    // if (!o->oToadMessageRecentlyTalked && o->oDistanceToMario < 600.0f) {
         o->oToadMessageState = TOAD_MESSAGE_OPACIFYING;
-    }
+    // }
 }
 
 static void toad_message_opaque(void) {
-    if (o->oDistanceToMario > 700.0f) {
-        o->oToadMessageState = TOAD_MESSAGE_FADING;
-    } else if (!o->oToadMessageRecentlyTalked) {
+    // if (o->oDistanceToMario > 700.0f) {
+    //     o->oToadMessageState = TOAD_MESSAGE_FADING;
+    // } else if (!o->oToadMessageRecentlyTalked) {
         o->oInteractionSubtype = INT_SUBTYPE_NPC;
         if (o->oInteractStatus & INT_STATUS_INTERACTED) {
             o->oInteractStatus = INT_STATUS_NONE;
             o->oToadMessageState = TOAD_MESSAGE_TALKING;
             play_toads_jingle();
         }
-    }
+    // }
 }
 
 static void toad_message_talking(void) {
+    u32 text = 0;
+    s32 dragonCoinsCount = save_file_get_dragon_coins_count(gCurrSaveFileNum - 1);
+    s32 saveFlags = save_file_get_flags_2();
     if (cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_DOWN,
         DIALOG_FLAG_TURN_TO_MARIO, CUTSCENE_DIALOG, o->oToadMessageDialogId)) {
         o->oToadMessageRecentlyTalked = TRUE;
@@ -141,6 +144,23 @@ static void toad_message_talking(void) {
             case TOAD_STAR_3_DIALOG:
                 o->oToadMessageDialogId = TOAD_STAR_3_DIALOG_AFTER;
                 bhv_spawn_star_no_level_exit(STAR_BP_ACT_3);
+                break;
+            case DIALOG_036:
+                save_file_set_flags_2(SAVE_FLAG_TALKED_TO_TOAD);
+                if (dragonCoinsCount == 9) {
+                    o->oToadMessageDialogId = DIALOG_039;
+                } else {
+                    text = DIALOG_037 << 16;           
+                    text += 9 - dragonCoinsCount;
+                    // osSyncPrintf("---- DIALOG %d ---- 0x%X ----\n", DIALOG_037 << 16, DIALOG_037 << 16);
+                    // osSyncPrintf("---- DIALOG %d ---- 0x%X ----\n", text, text);
+                    o->oToadMessageDialogId = text;
+                    // bhv_spawn_star_no_level_exit(STAR_BP_ACT_3);
+                }
+                break;
+            case DIALOG_039:
+                o->oToadMessageDialogId = DIALOG_040;
+                bhv_spawn_star_no_level_exit(STAR_BP_ACT_5);
                 break;
         }
     }
@@ -182,7 +202,7 @@ void bhv_toad_message_loop(void) {
 }
 
 void bhv_toad_message_init(void) {
-    s32 saveFlags = save_file_get_flags();
+    s32 saveFlags = save_file_get_flags_2();
 #ifdef UNLOCK_ALL
     s32 starCount = 999;
 #else
@@ -190,7 +210,9 @@ void bhv_toad_message_init(void) {
 #endif
     s32 dialogId = GET_BPARAM1(o->oBehParams);
     s32 enoughStars = TRUE;
-
+    u32 text = 0;
+    s32 dragonCoinsCount = save_file_get_dragon_coins_count(gCurrSaveFileNum - 1);
+    u8 currentLevelStarFlags = save_file_get_star_flags((gCurrSaveFileNum - 1), COURSE_NUM_TO_INDEX(gCurrCourseNum));
     switch (dialogId) {
         case TOAD_STAR_1_DIALOG:
             enoughStars = (starCount >= TOAD_STAR_1_REQUIREMENT);
@@ -210,12 +232,23 @@ void bhv_toad_message_init(void) {
                 dialogId = TOAD_STAR_3_DIALOG_AFTER;
             }
             break;
+        case DIALOG_036:
+            if (currentLevelStarFlags & (1 << STAR_BP_ACT_5)){
+                dialogId = DIALOG_040;
+            } else if (saveFlags & SAVE_FLAG_TALKED_TO_TOAD) {
+                if (dragonCoinsCount == 9) {
+                    dialogId = DIALOG_039;
+                } else{
+                    dialogId = DIALOG_037;
+                }
+            }
+            break;
     }
     if (enoughStars) {
         o->oToadMessageDialogId = dialogId;
         o->oToadMessageRecentlyTalked = FALSE;
         o->oToadMessageState = TOAD_MESSAGE_FADED;
-        o->oOpacity = 81;
+        // o->oOpacity = 81;
     } else {
         obj_mark_for_deletion(o);
     }

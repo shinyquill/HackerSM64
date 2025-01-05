@@ -295,6 +295,15 @@ void set_mario_initial_action(struct MarioState *m, u32 spawnType, u32 actionArg
             set_mario_action(m, ACT_TELEPORT_FADE_IN, 0);
             break;
         case MARIO_SPAWN_INSTANT_ACTIVE:
+            m->vel[0] = 0.0f;
+            m->vel[1] = 0.0f;
+            m->vel[2] = 0.0f;
+            m->forwardVel = 0.0f;
+            m->slideVelX = 0.0f;
+            m->slideVelZ = 0.0f;
+            m->angleVel[0] = 0;
+            m->angleVel[1] = 0;
+            m->angleVel[2] = 0;
             set_mario_action(m, ACT_IDLE, 0);
             break;
         case MARIO_SPAWN_AIRBORNE:
@@ -620,6 +629,7 @@ void initiate_warp(s16 destLevel, s16 destArea, s16 destWarpNode, s32 warpFlags)
     } else {
         sWarpDest.type = WARP_TYPE_SAME_AREA;
     }
+    osSyncPrintf("sWarpDest.type %d", sWarpDest.type);
 
     sWarpDest.levelNum = destLevel;
     sWarpDest.areaIdx = destArea;
@@ -744,8 +754,11 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
                 }
 #endif
                 sDelayedWarpTimer = 48;
+                gMarioState->respawnCheckpoint = TRUE;
+                osSyncPrintf("gMarioState->respawnCheckpoint: %d", gMarioState->respawnCheckpoint);
                 if (gWarpCheckpoint.courseNum != COURSE_NONE && gWarpCheckpoint.courseNum == gCurrCourseNum){
                     sSourceWarpNodeId = gWarpCheckpoint.warpNode;
+                    
                 } else {
                     sSourceWarpNodeId = WARP_NODE_DEATH;
                 }
@@ -769,6 +782,8 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
                             sSourceWarpNodeId = WARP_NODE_DEATH;
                         }
 #else
+                        gMarioState->respawnCheckpoint = TRUE;
+                        osSyncPrintf("gMarioState->respawnCheckpoint: %d", gMarioState->respawnCheckpoint);
                         if (gWarpCheckpoint.courseNum != COURSE_NONE && gWarpCheckpoint.courseNum == gCurrCourseNum){
                             sSourceWarpNodeId = gWarpCheckpoint.warpNode;
                         } else {
@@ -1370,8 +1385,8 @@ s32 lvl_init_from_save_file(UNUSED s16 initOrUpdate, s32 levelNum) {
 }
 
 s32 lvl_set_current_level(UNUSED s16 initOrUpdate, s32 levelNum) {
-    s32 warpCheckpointActive = sWarpCheckpointActive;
-
+    s32 warpCheckpointActive = sWarpCheckpointActive;    
+    save_file_set_dragon_coins_hud();
     sWarpCheckpointActive = FALSE;
     gCurrLevelNum = levelNum;
     gCurrCourseNum = gLevelToCourseNumTable[levelNum - 1];

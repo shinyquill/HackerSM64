@@ -1538,12 +1538,12 @@ s32 stomach_slide_action(struct MarioState *m, u32 stopAction, u32 airAction, s3
 }
 
 s32 act_stomach_slide(struct MarioState *m) {
-    return stomach_slide_action(m, ACT_STOMACH_SLIDE_STOP, ACT_FREEFALL, MARIO_ANIM_SLIDE_DIVE);
+    return stomach_slide_action(m, ACT_BUTT_SLIDE_STOP, ACT_FREEFALL, MARIO_ANIM_SLIDE_DIVE);
 }
 
 s32 act_hold_stomach_slide(struct MarioState *m) {
     if (m->marioObj->oInteractStatus & INT_STATUS_MARIO_DROP_OBJECT) {
-        return drop_and_set_mario_action(m, ACT_STOMACH_SLIDE, 0);
+        return drop_and_set_mario_action(m, ACT_BUTT_SLIDE, 0);
     }
 
     return stomach_slide_action(m, ACT_DIVE_PICKING_UP, ACT_HOLD_FREEFALL, MARIO_ANIM_SLIDE_DIVE);
@@ -1567,7 +1567,7 @@ s32 act_dive_slide(struct MarioState *m) {
 
     if (update_sliding(m, 8.0f) && is_anim_at_end(m)) {
         mario_set_forward_vel(m, 0.0f);
-        set_mario_action(m, ACT_STOMACH_SLIDE_STOP, 0);
+        set_mario_action(m, ACT_BUTT_SLIDE_STOP, 0);
     }
 
     if (mario_check_object_grab(m)) {
@@ -1576,7 +1576,7 @@ s32 act_dive_slide(struct MarioState *m) {
         return TRUE;
     }
 
-    common_slide_action(m, ACT_STOMACH_SLIDE_STOP, ACT_FREEFALL, MARIO_ANIM_DIVE);
+    common_slide_action(m, ACT_BUTT_SLIDE_STOP, ACT_FREEFALL, MARIO_ANIM_DIVE);
     return FALSE;
 }
 
@@ -1985,7 +1985,7 @@ s32 mario_execute_moving_action(struct MarioState *m) {
         case ACT_DECELERATING:             cancel = act_decelerating(m);             break;
         case ACT_HOLD_DECELERATING:        cancel = act_hold_decelerating(m);        break;
         case ACT_BUTT_SLIDE:               cancel = act_butt_slide(m);               break;
-        case ACT_STOMACH_SLIDE:            cancel = act_stomach_slide(m);            break;
+        case ACT_STOMACH_SLIDE:            cancel = act_butt_slide(m);               break;
         case ACT_HOLD_BUTT_SLIDE:          cancel = act_hold_butt_slide(m);          break;
         case ACT_HOLD_STOMACH_SLIDE:       cancel = act_hold_stomach_slide(m);       break;
         case ACT_DIVE_SLIDE:               cancel = act_dive_slide(m);               break;

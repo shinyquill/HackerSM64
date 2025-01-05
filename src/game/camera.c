@@ -122,7 +122,7 @@ extern s16 sSelectionFlags;
 extern s16 s2ndRotateFlags;
 extern s16 sCameraSoundFlags;
 extern u16 sCButtonsPressed;
-extern s16 sCutsceneDialogID;
+extern s32 sCutsceneDialogID;
 extern struct LakituState gLakituState;
 extern s16 sAreaYaw;
 extern s16 sAreaYawChange;
@@ -242,7 +242,7 @@ u16 sCButtonsPressed;
 /**
  * A copy of gDialogID, the dialog displayed during the cutscene.
  */
-s16 sCutsceneDialogID;
+s32 sCutsceneDialogID;
 /**
  * The currently playing shot in the cutscene.
  */
@@ -580,21 +580,21 @@ void set_environmental_camera_shake(s16 shake) {
 void set_camera_shake_from_point(s16 shake, f32 posX, f32 posY, f32 posZ) {
     switch (shake) {
         case SHAKE_POS_BOWLING_BALL:
-            set_pitch_shake_from_point(0x28, 0x8, 0x4000, 2000.0f, posX, posY, posZ);
+            set_pitch_shake_from_point(0x28, 0x8, 0x4000, 4000.0f, posX, posY, posZ);
             break;
 
         case SHAKE_POS_SMALL:
-            set_pitch_shake_from_point(0x80, 0x8, 0x4000, 4000.0f, posX, posY, posZ);
+            set_pitch_shake_from_point(0x80, 0x8, 0x4000, 6000.0f, posX, posY, posZ);
             set_fov_shake_from_point_preset(SHAKE_FOV_SMALL, posX, posY, posZ);
             break;
 
         case SHAKE_POS_MEDIUM:
-            set_pitch_shake_from_point(0xC0, 0x8, 0x4000, 6000.0f, posX, posY, posZ);
+            set_pitch_shake_from_point(0xC0, 0x8, 0x4000, 8000.0f, posX, posY, posZ);
             set_fov_shake_from_point_preset(SHAKE_FOV_MEDIUM, posX, posY, posZ);
             break;
 
         case SHAKE_POS_LARGE:
-            set_pitch_shake_from_point(0x100, 0x8, 0x3000, 8000.0f, posX, posY, posZ);
+            set_pitch_shake_from_point(0x100, 0x8, 0x3000, 10000.0f, posX, posY, posZ);
             set_fov_shake_from_point_preset(SHAKE_FOV_LARGE, posX, posY, posZ);
             break;
     }
@@ -868,6 +868,7 @@ s32 update_radial_camera(struct Camera *c, Vec3f focus, Vec3f pos) {
  * Update the camera during 8 directional mode
  */
 s32 update_8_directions_camera(struct Camera *c, Vec3f focus, Vec3f pos) {
+    
     s16 camYaw = s8DirModeBaseYaw + s8DirModeYawOffset;
     s16 pitch = look_down_slopes(camYaw);
     f32 posY;
@@ -1812,6 +1813,12 @@ s32 mode_behind_mario(struct Camera *c) {
     yaw = update_behind_mario_camera(c, c->focus, newPos);
     c->pos[0] = newPos[0];
     c->pos[2] = newPos[2];
+
+    // Check if Mario is in the drowning state and reset the camera mode
+    if (marioState->action == ACT_DROWNING) {
+        set_camera_mode(c, c->defMode, 1);
+        return 0;
+    }
 
     // Keep the camera above the water surface if swimming
     if (c->mode == WATER_SURFACE_CAMERA_MODE) {
@@ -3151,6 +3158,7 @@ void reset_camera(struct Camera *c) {
     sCSideButtonYaw = 0;
     s8DirModeBaseYaw = 0;
     s8DirModeYawOffset = 0;
+    s8DirModeYawOffset = gMarioState->faceAngle[1] - 0x8000;
     c->doorStatus = DOOR_DEFAULT;
     sMarioCamState->headRotation[0] = 0;
     sMarioCamState->headRotation[1] = 0;
@@ -5212,6 +5220,7 @@ void set_camera_mode_8_directions(struct Camera *c) {
         sStatusFlags &= ~CAM_FLAG_SMOOTH_MOVEMENT;
         s8DirModeBaseYaw = 0;
         s8DirModeYawOffset = 0;
+        s8DirModeYawOffset = gMarioState->faceAngle[1] - 0x8000;
     }
 }
 
@@ -6541,7 +6550,7 @@ UNUSED s32 unused_dialog_cutscene_response(u8 cutscene) {
     }
 }
 
-s16 cutscene_object_with_dialog(u8 cutscene, struct Object *obj, s16 dialogID) {
+s16 cutscene_object_with_dialog(u8 cutscene, struct Object *obj, s32 dialogID) {
     s16 response = DIALOG_RESPONSE_NONE;
 
     if ((gCamera->cutscene == CUTSCENE_NONE) && (sObjectCutscene == CUTSCENE_NONE)) {
@@ -8299,6 +8308,14 @@ void cutscene_falling_death(struct Camera *c) {
     // set_handheld_shake(HAND_CAM_SHAKE_HIGH);
 }
 
+void cutscene_spawn(struct Camera *c) {
+    osSyncPrintf("cutscene_spawn");
+    s8DirModeYawOffset = 0;
+    osSyncPrintf("s8DirModeYawOffset : %d\n", s8DirModeYawOffset);
+    s8DirModeYawOffset = gMarioState->faceAngle[1] - 0x8000;
+    osSyncPrintf("s8DirModeYawOffset : %d\n", s8DirModeYawOffset);
+}
+
 /**
  * Fly away from Mario near the end of the cutscene.
  */
@@ -8579,8 +8596,14 @@ void cutscene_dialog_create_dialog_box(struct Camera *c) {
     if (c->cutscene == CUTSCENE_RACE_DIALOG) {
         create_dialog_box_with_response(sCutsceneDialogID);
     } else {
-        create_dialog_box(sCutsceneDialogID);
+        osSyncPrintf("---- DIALOG %d ---- 0x%X ----\n", sCutsceneDialogID, sCutsceneDialogID);
+        if (GET_HIGH_U16_OF_32(sCutsceneDialogID) == 0) {
+            create_dialog_box(GET_LOW_U16_OF_32(sCutsceneDialogID));
+        } else {
+            create_dialog_box_with_var(GET_HIGH_U16_OF_32(sCutsceneDialogID), GET_LOW_U16_OF_32(sCutsceneDialogID));
+        }
     }
+    
 
     //! Unused. This may have been used before sCutsceneDialogResponse was implemented.
     sCutsceneVars[8].angle[0] = DIALOG_RESPONSE_NOT_DEFINED;
@@ -10343,6 +10366,13 @@ struct Cutscene sCutsceneFalling[] = {
     { cutscene_falling_death, CUTSCENE_LOOP }
 };
 
+/**
+ * Cutscene that plays when Mario spawns.
+ */
+struct Cutscene sCutsceneSpawn[] = {
+    { cutscene_spawn, 0 }
+};
+
 /* TODO:
  * The next two arrays are both related to levels, and they look generated.
  * These should be split into their own file.
@@ -10400,7 +10430,7 @@ u8 sZoomOutAreaMasks[] = {
 	ZOOMOUT_AREA_MASK(1, 0, 0, 0, 1, 0, 0, 0), // SL             | WDW
 	ZOOMOUT_AREA_MASK(1, 0, 0, 0, 1, 1, 0, 0), // JRB            | THI
 	ZOOMOUT_AREA_MASK(0, 0, 0, 0, 1, 0, 0, 0), // TTC            | RR
-	ZOOMOUT_AREA_MASK(1, 1, 0, 0, 1, 0, 0, 0), // CASTLE_GROUNDS | BITDW
+	ZOOMOUT_AREA_MASK(0, 1, 0, 0, 1, 0, 0, 0), // CASTLE_GROUNDS | BITDW
 	ZOOMOUT_AREA_MASK(0, 0, 0, 0, 1, 0, 0, 0), // VCUTM          | BITFS
 	ZOOMOUT_AREA_MASK(0, 0, 0, 0, 1, 0, 0, 0), // SA             | BITS
 	ZOOMOUT_AREA_MASK(1, 0, 0, 0, 0, 0, 0, 0), // LLL            | DDD
@@ -10805,6 +10835,7 @@ void play_cutscene(struct Camera *c) {
         CUTSCENE(CUTSCENE_ENTER_PYRAMID_TOP,    sCutsceneEnterPyramidTop)
         CUTSCENE(CUTSCENE_SSL_PYRAMID_EXPLODE,  sCutscenePyramidTopExplode)
         CUTSCENE(CUTSCENE_FALLING,  sCutsceneFalling)
+        CUTSCENE(CUTSCENE_SPAWN,  sCutsceneSpawn)
     }
 
 #undef CUTSCENE

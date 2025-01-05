@@ -1,3 +1,11 @@
+void bhv_dragon_coin_init(void) {
+    if(save_file_get_dragon_coin(GET_BPARAM1(o->oBehParams)) == 1){
+        cur_obj_set_model(MODEL_DRAGON_COIN_TRANSPARENT);
+    } else {
+        cur_obj_set_model(MODEL_DRAGON_COIN);
+    }
+}
+
 void bhv_dragon_coin_loop(void) {
     o->oFaceAngleYaw += 0x800;
     switch(o->oAction){
@@ -14,6 +22,9 @@ void bhv_dragon_coin_loop(void) {
                 o->oPosY += 10;
             } else {
                 // o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
+                if(save_file_get_dragon_coin(GET_BPARAM1(o->oBehParams)) == 0){
+                    save_file_set_dragon_coin(GET_BPARAM1(o->oBehParams));
+                }
                 mark_obj_for_deletion(o);
             }
             break;

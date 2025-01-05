@@ -90,14 +90,20 @@ DEFINE_DIALOG(DIALOG_011, 1, 1, 30, 200, _("\
 Damn...\n\
 "))
 
-DEFINE_DIALOG(DIALOG_012, 1, 5, 30, 200, _("\
+DEFINE_DIALOG(DIALOG_012, 1, 6, 30, 200, _("\
 You did it Mario!\n\
-You managed to get the\n\
-star inside the temple!\n\
-Although we lost an amazing\n\
+You managed to get out\n\
+that temple in time!\n\
+Although we lost an\n\
 historic structure,\n\
 I'm glad you're fine\n\
-my dear brother!"))
+my dear brother!\n\
+Also, this star showed up\n\
+after the temple started\n\
+collapsing, I think it's\n\
+the treasure we have been\n\
+looking for!\n\
+You should take it!"))
 
 DEFINE_DIALOG(DIALOG_013, 1, 5, 30, 200, _("\
 Yo, that guy did it,\n\
@@ -107,8 +113,8 @@ Maybe I should have\n\
 listened to him."))
 
 DEFINE_DIALOG(DIALOG_014, 1, 4, 30, 200, _("\
-Wow! You got a Power Star!\n\
-\n\
+Wow! You got a Power\n\
+Star!\n\
 \n\
 \n\
 Do you want to Save?\n\
@@ -117,12 +123,19 @@ Do you want to Save?\n\
 
 DEFINE_DIALOG(DIALOG_015, 1, 6, 30, 200, _("\
 Welcome to my shop!\n\
-Although I'm not selling\n\
-anything yet.\n\
-In the door behind me\n\
-i set up these pipes\n\
-so you can replay past\n\
-experiences!\n\
+We just opened the\n\
+coffee shop, so feel\n\
+free to take a break!\n\
+\n\
+\n\
+If you to the right\n\
+hall, the door to the\n\
+left will take you to\n\
+the replay zone.\n\
+Where you can replay\n\
+the levels and improve\n\
+your ranking, or even\n\
+get some prizes!\n\
 The other door will take\n\
 you to the ending"))
 
@@ -168,28 +181,52 @@ Thanks for playing!\n\
 
 DEFINE_DIALOG(DIALOG_017, 1, 6, 30, 200, _("\
 If you're reading this\n\
-that means there are no\n\
-extra stars, the plan\n\
-was to have around 5\n\
-stars total, but I'm\n\
-to tired.\n\
-I might update the hack\n\
-in the future, you can\n\
-still replay the levels\n\
+that means that you're\n\
+playing the updated\n\
+version!\n\
 \n\
 \n\
+In this room you can\n\
+replay the levels\n\
+to improve your ranking.\n\
+The ranking system is\n\
+pretty simple, you only\n\
+have to beat the level\n\
+as fast as possible and\n\
+collect as much coins as\n\
+you are able to.\n\
+Reaching a S rank will\n\
+spawn a star in front of\n\
+thier respective level.\n\
+You can check your ranking\n\
+in the pause menu, and\n\
+also, from now, when you are\n\
+playing a level, you can\n\
+retry or return to here\n\
+through the pause menu.\n\
+The dragon coins do not\n\
+count for the ranking,\n\
+they are for a seperate\n\
+star.\n\
 \n\
-Sorry :c"))
+\n\
+Finally the signposts\n\
+will give you the time\n\
+and ammount of coins\n\
+you need to get an S\n\
+Good Luck!!"))
 
 DEFINE_DIALOG(DIALOG_018, 1, 4, 30, 200, _("\
-I'm sleeping because...\n\
-...I'm sleepy. I don't\n\
-like being disturbed.\n\
-Please walk quietly."))
+Requeriments for S rank\n\
+------ Level 1 ------\n\
+Time: 2:00\n\
+Coins: 110"))
 
-DEFINE_DIALOG(DIALOG_019, 1, 2, 30, 200, _("\
-Shhh! Please walk\n\
-quietly in the hallway!"))
+DEFINE_DIALOG(DIALOG_019, 1, 4, 30, 200, _("\
+Requeriments for S rank\n\
+------ Level 2 ------\n\
+Time: 2:30\n\
+Coins: 115"))
 
 DEFINE_DIALOG(DIALOG_020, 1, 6, 95, 150, _("\
 Dear Mario:\n\
@@ -353,82 +390,72 @@ For now, reporting live,\n\
 this has been the\n\
 Lakitu Bros."))
 
-DEFINE_DIALOG(DIALOG_035, 1, 5, 30, 200, _("\
-There are four camera, or\n\
-『[C],』 Buttons. Press [C]^\n\
-to look around using the\n\
-Control Stick.\n\
-\n\
-You'll usually see Mario\n\
-through Lakitu's camera.\n\
-It is the camera\n\
-recommended for normal\n\
-play.\n\
-You can change angles by\n\
-pressing [C]>. If you press\n\
-[R], the view switches to\n\
-Mario's camera, which\n\
-is directly behind him.\n\
-Press [R] again to return\n\
-to Lakitu's camera. Press\n\
-[C]| to see Mario from\n\
-afar, using either\n\
-Lakitu's or Mario's view."))
+DEFINE_DIALOG(DIALOG_035, 1, 4, 30, 200, _("\
+Requeriments for S rank\n\
+------ Level 3 ------\n\
+Time: 2:45\n\
+Coins: 150"))
 
-DEFINE_DIALOG(DIALOG_036, 1, 5, 30, 200, _("\
-OBSERVATION PLATFORM\n\
-Press [C]^ to take a look\n\
-around. Don't miss\n\
-anything!\n\
+DEFINE_DIALOG(DIALOG_036, 1, 6, 30, 200, _("\
+Hi there, I'm being\n\
+collecting these rare\n\
+dragon coins. they look\n\
+valuables, don't they?\n\
+I came here because I\n\
+heard that there are\n\
+some of them in this\n\
+place.\n\
 \n\
-Press [R] to switch to\n\
-Mario's camera. It\n\
-always follows Mario.\n\
-Press [R] again to switch\n\
-to Lakitu's camera.\n\
-Pause the game and\n\
-switch the mode to 『fix』\n\
-the camera in place while\n\
-holding [R]. Give it a try!"))
+\n\
+\n\
+\n\
+My sources told me that\n\
+there should be around\n\
+9 dragon coins in total.\n\
+You look like someone\n\
+who likes collecting\n\
+things.\n\
+Remember that, in order\n\
+to keep the dragon coins\n\
+between levels, you\n\
+must finish the level!\n\
+\n\
+\n\
+So? Are you up to the\n\
+challenge? If you can\n\
+get me those 9 dragon\n\
+coins I'll give you a\n\
+star. Seems fair, doesn't\n\
+it?"))
 
-DEFINE_DIALOG(DIALOG_037, 1, 2, 30, 200, _("\
-I win! You lose!\n\
-Ha ha ha ha!\n\
-You're no slouch, but I'm\n\
-a better sledder!\n\
-Better luck next time!"))
+DEFINE_DIALOG(DIALOG_037, 1, 4, 30, 200, _("\
+Mmm... it seems that you\n\
+are still missing [%]\n\
+dragon coins still.\n\
+\n\
+Remember that, in order\n\
+to keep the dragon coins\n\
+between levels, you\n\
+must finish the level!"))
 
 DEFINE_DIALOG(DIALOG_038, 1, 3, 95, 200, _("\
 Reacting to the Star\n\
 power, the door slowly\n\
 opens."))
 
-DEFINE_DIALOG(DIALOG_039, 1, 4, 30, 200, _("\
-No visitors allowed,\n\
-by decree of\n\
-the Big Bob-omb\n\
-\n\
-I shall never surrender my\n\
-Stars, for they hold the\n\
-power of the castle in\n\
-their glow.\n\
-They were a gift from\n\
-Bowser, the Koopa King\n\
-himself, and they lie well\n\
-hidden within my realm.\n\
-Not a whisper of their\n\
-whereabouts shall leave\n\
-my lips. Oh, all right,\n\
-perhaps one hint:\n\
-Heed the Star names at\n\
-the beginning of the\n\
-course.\n\
-//--The Big Bob-omb"))
+DEFINE_DIALOG(DIALOG_039, 1, 5, 30, 200, _("\
+Oh wow, you got them\n\
+all! I'm impressed!\n\
+Well, I guess I should\n\
+keep my end of the\n\
+deal. Here's your star!"))
 
-DEFINE_DIALOG(DIALOG_040, 1, 3, 30, 200, _("\
-Warning!\n\
-Cold, Cold Crevasse\n\
-Below!"))
+DEFINE_DIALOG(DIALOG_040, 1, 5, 30, 200, _("\
+Thanks for your work!\n\
+Maybe I should keep\n\
+your contact info in\n\
+hand, you never know\n\
+when I might need"))
 
 DEFINE_DIALOG(DIALOG_041, 1, 3, 30, 200, _("\
 I win! You lose!\n\
@@ -439,30 +466,18 @@ messin' with Koopa the\n\
 Quick.\n\
 Better luck next time!"))
 
-DEFINE_DIALOG(DIALOG_042, 1, 4, 30, 200, _("\
-Caution! Narrow Bridge!\n\
-Cross slowly!\n\
-\n\
-\n\
-You can jump to the edge\n\
-of the cliff and hang on,\n\
-and you can climb off the\n\
-edge if you move slowly.\n\
-When you want to let go,\n\
-either press [Z] or press\n\
-the Control Stick in the\n\
-direction of Mario's back.\n\
-To climb up, press Up on\n\
-the Control Stick. To\n\
-scurry up quickly, press\n\
-the [A] Button."))
+DEFINE_DIALOG(DIALOG_042, 1, 3, 30, 200, _("\
+It's impresive that this\n\
+place appeared out of\n\
+nowhere, isn't it?\n\
+I just hope the coffee \n\
+in here is good."))
 
-DEFINE_DIALOG(DIALOG_043, 1, 5, 30, 200, _("\
-If you jump and hold the\n\
-[A] Button, you can hang on\n\
-to some objects overhead.\n\
-It's the same as grabbing\n\
-a flying bird!"))
+DEFINE_DIALOG(DIALOG_043, 1, 4, 30, 200, _("\
+Can you see if the waiter\n\
+is still in there, I\n\
+can't really see him\n\
+from here."))
 
 DEFINE_DIALOG(DIALOG_044, 1, 5, 95, 200, _("\
 Whooo's there? Whooo\n\
@@ -489,42 +504,20 @@ That's it for now. Press\n\
 [A] to let go. Okay,\n\
 bye byyyyyyeeee!"))
 
-DEFINE_DIALOG(DIALOG_046, 1, 5, 30, 200, _("\
-You have to master three\n\
-important jumping\n\
-techniques.\n\
-First try the Triple Jump.\n\
-\n\
-Run fast, then jump three\n\
-times, one, two, three.\n\
-If you time the jumps\n\
-right, you'll hop, skip,\n\
-then jump really high.\n\
-Next, go for distance\n\
-with the Long Jump. Run,\n\
-press [Z] to crouch then [A]\n\
-to jump really far.\n\
-\n\
-To do the Wall Kick, press\n\
-[A] to jump at a wall, then\n\
-jump again when you hit\n\
-the wall.\n\
-\n\
-Got that? Triple Jump,\n\
-Long Jump, Wall Kick.\n\
-Practice, practice,\n\
-practice. You don't stand\n\
-a chance without them."))
+DEFINE_DIALOG(DIALOG_046, 1, 2, 30, 200, _("\
+Look at the fishes!\n\
+They're so cute!"))
 
 DEFINE_DIALOG(DIALOG_047, 1, 2, 95, 200, _("\
 Hi! I'll prepare the\n\
 cannon for you!"))
 
-DEFINE_DIALOG(DIALOG_048, 1, 4, 30, 200, _("\
-Snow Mountain Summit\n\
-Watch for slippery\n\
-conditions! Please enter\n\
-the cottage first."))
+DEFINE_DIALOG(DIALOG_048, 1, 5, 30, 200, _("\
+If you're looking for\n\
+for dragon coins, in\n\
+order to keep them\n\
+between levels, you\n\
+must finish the level!"))
 
 DEFINE_DIALOG(DIALOG_049, 1, 5, 30, 200, _("\
 Remember that tricky Wall\n\

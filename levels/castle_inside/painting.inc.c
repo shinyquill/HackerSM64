@@ -1346,8 +1346,8 @@ struct Painting bob_painting = {
     /* Texture Type */ PAINTING_IMAGE,
     /* Floor Status */ 0x00, 0x00, 0x00 /* which of the painting's nearby special floors Mario's on */,
     /* Ripple Status */ 0x00,
-    /* Rotation */     0.0f,    90.0f,
-    /* Position */ -5222.4f,   409.6f,   -153.6f,
+    /* Rotation */     0.0f,    270.0f,
+    /* Position */ 1992, 356, -3272,
     /*                         curr   passive     entry */
     /* Ripple Magnitude */     0.0f,    20.0f,    80.0f,
     /* Ripple Decay */         1.0f,  0.9608f,  0.9524f,
@@ -1363,7 +1363,7 @@ struct Painting bob_painting = {
     /* Ripple Trigger */ RIPPLE_TRIGGER_PROXIMITY,
     /* Alpha */ 0xFF,
     /* Mario Below */  0x00, 0x00, 0x00, /* Whether or not Mario is below the painting */
-    /* Size */  614.0f,
+    /* Size */  722.0f,
 };
 
 // 0x07023698 - 0x07023710
@@ -1400,8 +1400,8 @@ struct Painting wf_painting = {
     /* Texture Type */ PAINTING_IMAGE,
     /* Floor Status */ 0x00, 0x00, 0x00 /* which of the painting's nearby special floors Mario's on */,
     /* Ripple Status */ 0x00,
-    /* Rotation */     0.0f,     0.0f,
-    /* Position */   -51.2f,  -204.8f, -4505.6f,
+    /* Rotation */     0.0f,     270.0f,
+    /* Position */   1992, 356, -2050,
     /*                         curr   passive     entry */
     /* Ripple Magnitude */     0.0f,    20.0f,    80.0f,
     /* Ripple Decay */         1.0f,  0.9608f,  0.9524f,
@@ -1417,7 +1417,7 @@ struct Painting wf_painting = {
     /* Ripple Trigger */ RIPPLE_TRIGGER_PROXIMITY,
     /* Alpha */ 0xFF,
     /* Mario Below */  0x00, 0x00, 0x00, /* Whether or not Mario is below the painting */
-    /* Size */  614.0f,
+    /* Size */  722.0f,
 };
 
 // 0x07023788 - 0x07023800
@@ -1428,7 +1428,7 @@ struct Painting jrb_painting = {
     /* Floor Status */ 0x00, 0x00, 0x00 /* which of the painting's nearby special floors Mario's on */,
     /* Ripple Status */ 0x00,
     /* Rotation */     0.0f,   270.0f,
-    /* Position */  4300.8f,   409.6f,  -537.6f,
+    /* Position */  1992, 356, -828,
     /*                         curr   passive     entry */
     /* Ripple Magnitude */     0.0f,    20.0f,    80.0f,
     /* Ripple Decay */         1.0f,  0.9608f,  0.9524f,
@@ -1444,7 +1444,7 @@ struct Painting jrb_painting = {
     /* Ripple Trigger */ RIPPLE_TRIGGER_PROXIMITY,
     /* Alpha */ 0xFF,
     /* Mario Below */  0x00, 0x00, 0x00, /* Whether or not Mario is below the painting */
-    /* Size */  614.0f,
+    /* Size */  722.0f,
 };
 
 // 0x07023800 - 0x07023878

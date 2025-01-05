@@ -431,6 +431,13 @@ void render_hud_coins(void) {
     print_text_fmt_int((HUD_COINS_X + 30), HUD_TOP_Y, "%d", gHudDisplay.coins);
 }
 
+void render_hud_dragon_coins_counter(void) {
+    s32 dragonCoinsCount = save_file_get_dragon_coins_count(gCurrSaveFileNum - 1);
+    print_text(HUD_COINS_X, HUD_TOP_Y, "("); // 'Coin' glyph
+    print_text((HUD_COINS_X + 16), HUD_TOP_Y, "*"); // 'X' glyph
+    print_text_fmt_int((HUD_COINS_X + 30), HUD_TOP_Y, "%d", dragonCoinsCount);
+}
+
 /**
  * Renders the amount of stars collected.
  * Disables "X" glyph when Mario has 100 stars or more.
@@ -492,6 +499,21 @@ void render_hud_timer(void) {
  */
 void set_hud_camera_status(s16 status) {
     sCameraHUD.status = status;
+}
+
+void render_dragon_coins(void) {
+    // setup_dragon_coins();
+    s32 courseIndex = COURSE_NUM_TO_INDEX(gCurrCourseNum);
+    u8* dragonCoins = save_file_get_course_dragon_coin_score(courseIndex);
+    gHudDisplay.dragonCoins[0] = dragonCoins[0]; 
+    gHudDisplay.dragonCoins[1] = dragonCoins[1];
+    gHudDisplay.dragonCoins[2] = dragonCoins[2];
+    gHudDisplay.dragonCoins[0] == 1 ? print_text(HUD_COINS_X, HUD_TOP_Y - 16, "(") : print_text(HUD_COINS_X, HUD_TOP_Y - 16, ")");
+    gHudDisplay.dragonCoins[1] == 1 ? print_text(HUD_COINS_X+16, HUD_TOP_Y - 16, "(") : print_text(HUD_COINS_X+16, HUD_TOP_Y - 16, ")");
+    gHudDisplay.dragonCoins[2] == 1 ? print_text(HUD_COINS_X+32, HUD_TOP_Y - 16, "(") : print_text(HUD_COINS_X+32, HUD_TOP_Y - 16, ")");
+    // save_file_get_dragon_coin(0) == 1 ? print_text(HUD_COINS_X, HUD_TOP_Y - 16, "(") : print_text(HUD_COINS_X, HUD_TOP_Y - 16, ")");
+    // save_file_get_dragon_coin(1) == 1 ? print_text(HUD_COINS_X+16, HUD_TOP_Y - 16, "(") : print_text(HUD_COINS_X+16, HUD_TOP_Y - 16, ")");
+    // save_file_get_dragon_coin(2) == 1 ? print_text(HUD_COINS_X+32, HUD_TOP_Y - 16, "(") : print_text(HUD_COINS_X+32, HUD_TOP_Y - 16, ")");
 }
 
 /**
@@ -579,12 +601,18 @@ void render_hud(void) {
 #endif
         // s32 courseIndex = COURSE_NUM_TO_INDEX(gCurrCourseNum);
         // struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1][0];
-        // print_text_fmt_int(20, (SCREEN_HEIGHT - 80), "PosY %d", (s16)saveFile->beatenFinalLevel);
-        // print_text_fmt_int(20, (SCREEN_HEIGHT - 64), "PosY %d", (s16)saveFile->courseTimer[courseIndex]);
-        // print_text_fmt_int(20, (SCREEN_HEIGHT - 48), "PosY %d", (s16)saveFile->courseCoinScores[courseIndex]);
+        // print_text_fmt_int(20, (SCREEN_HEIGHT - 80), "Beaten %d", (s8)saveFile->beatenFinalLevel == TRUE);
+        // print_text_fmt_int(20, (SCREEN_HEIGHT - 64), "getBeaten %d", (s8)save_file_get_beaten());
+        // print_text_fmt_int(20, (SCREEN_HEIGHT - 96), "PosY %d", (s32)save_file_get_dragon_coins_count(gCurrSaveFileNum - 1));
+        // print_text_fmt_int(20, (SCREEN_HEIGHT - 64), "1st - %d", (s32)COURSE_COUNT);
+        // print_text_fmt_int(20, (SCREEN_HEIGHT - 80), "2nd - %d", (s32)COURSE_STAGES_COUNT);
+        // print_text_fmt_int(20, (SCREEN_HEIGHT - 96), "3rd - %d", (s8)gHudDisplay.dragonCoins[2]);
 
         if (hudDisplayFlags & HUD_DISPLAY_FLAG_COIN_COUNT) {
+            render_dragon_coins();
             render_hud_coins();
+        } else {
+            render_hud_dragon_coins_counter();
         }
 
         if (hudDisplayFlags & HUD_DISPLAY_FLAG_STAR_COUNT) {

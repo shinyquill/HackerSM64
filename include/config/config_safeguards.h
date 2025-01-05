@@ -90,11 +90,11 @@
     #undef VISUAL_DEBUG
     #define VISUAL_DEBUG
 
-    #undef UNLOCK_ALL
-    #define UNLOCK_ALL
+    // #undef UNLOCK_ALL
+    // #define UNLOCK_ALL
 
-    #undef COMPLETE_SAVE_FILE
-    #define COMPLETE_SAVE_FILE
+    // #undef COMPLETE_SAVE_FILE
+    // #define COMPLETE_SAVE_FILE
 
     #undef DEBUG_ASSERTIONS
     #define DEBUG_ASSERTIONS

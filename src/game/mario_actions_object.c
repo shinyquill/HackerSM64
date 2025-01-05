@@ -466,7 +466,7 @@ s32 mario_execute_object_action(struct MarioState *m) {
         case ACT_PUNCHING:           cancel = act_punching(m);           break;
         case ACT_PICKING_UP:         cancel = act_picking_up(m);         break;
         case ACT_DIVE_PICKING_UP:    cancel = act_dive_picking_up(m);    break;
-        case ACT_STOMACH_SLIDE_STOP: cancel = act_stomach_slide_stop(m); break;
+        case ACT_STOMACH_SLIDE_STOP: cancel = act_butt_slide_stop(m); break;
         case ACT_PLACING_DOWN:       cancel = act_placing_down(m);       break;
         case ACT_THROWING:           cancel = act_throwing(m);           break;
         case ACT_HEAVY_THROW:        cancel = act_heavy_throw(m);        break;

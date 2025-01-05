@@ -65,3 +65,9 @@ UNUSED static const u64 binid_3 = 3;
 #include "fall_piece_temple_3/collision.inc.c"
 #include "fall_piece_temple_4/collision.inc.c"
 #include "fall_piece_temple_5/collision.inc.c"
+#include "seaweed/model.inc.c"
+#include "seaweed/anims/data.inc.c"
+#include "seaweed/anims/table.inc.c"
+UNUSED static const u64 binid_1 = 1;
+#include "dragon_coin_transparent/model.inc.c"
+#include "fall_piece_2_temple/model.inc.c"

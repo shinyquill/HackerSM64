@@ -418,6 +418,24 @@ ALIGNED8 static const Texture texture_hud_char_star[] = {
 #include "textures/segment2/segment2.05C00.rgba16.inc.c"
 };
 
+ALIGNED8 static const Texture texture_hud_dragon_coin[] = {
+#include "textures/segment2/segment2.dragon_coin.rgba16.inc.c"
+};
+
+ALIGNED8 static const Texture texture_hud_dragon_coin_empty[] = {
+#include "textures/segment2/segment2.dragon_coin_empty.rgba16.inc.c"
+};
+
+ALIGNED8 static const Texture texture_hud_dragon_coin_white[] = {
+#include "textures/segment2/segment2.dragon_coin_white.rgba16.inc.c"
+};
+
+ALIGNED8 static const Texture texture_hud_dragon_coin_white_empty[] = {
+#include "textures/segment2/segment2.dragon_coin_white_empty.rgba16.inc.c"
+};
+
+
+
 #if defined(VERSION_JP) || defined(VERSION_SH) || defined(COMPLETE_EN_US_SEGMENT2)
 ALIGNED8 static const Texture texture_hud_char_decimal_point[] = {
 #include "textures/segment2/segment2.05E00.rgba16.inc.c"
@@ -2028,7 +2046,8 @@ const Texture *const main_hud_lut[] = {
                    0x0,                0x0,                0x0, texture_hud_char_minus,
     texture_hud_char_multiply, texture_hud_char_coin, texture_hud_char_red_coin, texture_hud_char_silver_coin,
     texture_hud_char_mario_head, texture_hud_char_star, texture_hud_char_decimal_point, texture_hud_char_beta_key,
-    texture_hud_char_apostrophe, texture_hud_char_double_quote, texture_hud_char_umlaut,
+    texture_hud_char_apostrophe, texture_hud_char_double_quote, texture_hud_char_umlaut,texture_hud_dragon_coin, texture_hud_dragon_coin_empty,
+    texture_hud_dragon_coin_white, texture_hud_dragon_coin_white_empty
 };
 
 // Main small font print table 0x02008338-0x02008737

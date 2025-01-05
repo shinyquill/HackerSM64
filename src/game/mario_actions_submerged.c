@@ -174,6 +174,11 @@ static u32 perform_water_step(struct MarioState *m) {
         apply_water_current(m, step);
     }
 
+    if (m->pos[1] < m->floorHeight + 50.0f) {
+        // Reduce downward movement when near a cliff
+        m->vel[1] = MAX(m->vel[1], 0.0f);
+    }
+
     nextPos[0] = m->pos[0] + step[0];
     nextPos[1] = m->pos[1] + step[1];
     nextPos[2] = m->pos[2] + step[2];
@@ -938,16 +943,25 @@ static s32 act_water_shocked(struct MarioState *m) {
 }
 
 static s32 act_drowning(struct MarioState *m) {
+    osSyncPrintf("------------- act_drowning 1 -------------");
+    if (m->heldObj != NULL) {
+        m->heldObj->oInteractStatus = INT_STATUS_STOP_RIDING;
+        m->heldObj = NULL;
+    }
     switch (m->actionState) {
         case ACT_STATE_DROWNING_EYES_HALF_CLOSED:
+            osSyncPrintf("------------- act_drowning 2 -------------");
             set_mario_animation(m, MARIO_ANIM_DROWNING_PART1);
             m->marioBodyState->eyeState = MARIO_EYES_HALF_CLOSED;
             if (is_anim_at_end(m)) {
-                m->actionState = ACT_STATE_DROWNING_EYES_DEAD;
+                m->actionState = ACT_STATE_DROWNING_EYES_DEAD;                
+                set_camera_mode(m->area->camera, m->area->camera->defMode, 1);
+                level_trigger_warp(m, WARP_OP_DEATH);
             }
             break;
 
         case ACT_STATE_DROWNING_EYES_DEAD:
+            osSyncPrintf("------------- act_drowning 3 -------------");
             set_mario_animation(m, MARIO_ANIM_DROWNING_PART2);
             m->marioBodyState->eyeState = MARIO_EYES_DEAD;
             if (m->marioObj->header.gfx.animInfo.animFrame == 30) {
@@ -955,6 +969,7 @@ static s32 act_drowning(struct MarioState *m) {
             }
             break;
     }
+    osSyncPrintf("------------- act_drowning 4 -------------");
 
     play_sound_if_no_flag(m, SOUND_MARIO_DROWNING, MARIO_ACTION_SOUND_PLAYED);
     stationary_slow_down(m);
@@ -1570,15 +1585,20 @@ static s32 check_common_submerged_cancels(struct MarioState *m) {
 s32 mario_execute_submerged_action(struct MarioState *m) {
     s32 cancel = FALSE;
 
+    osSyncPrintf("------------- mario_execute_submerged_action 1 -------------");
     if (check_common_submerged_cancels(m)) {
         return TRUE;
     }
 
+    osSyncPrintf("------------- mario_execute_submerged_action 2 -------------");
     m->quicksandDepth = 0.0f;
 
     m->marioBodyState->headAngle[1] = 0;
     m->marioBodyState->headAngle[2] = 0;
 
+    osSyncPrintf("------------- mario_execute_submerged_action 3 -------------");
+    
+    osSyncPrintf("------------- m->action : %d -------------", m->action);
     /* clang-format off */
     switch (m->action) {
         case ACT_WATER_IDLE:                 cancel = act_water_idle(m);                 break;
@@ -1617,5 +1637,6 @@ s32 mario_execute_submerged_action(struct MarioState *m) {
     }
     /* clang-format on */
 
+    osSyncPrintf("------------- mario_execute_submerged_action 4 -------------");
     return cancel;
 }

@@ -294,4 +294,14 @@ extern const Gfx wooden_signpost_seg3_dl_0302DCD0[];
 extern const Gfx wooden_signpost_seg3_dl_0302DD08[];
 extern const Collision wooden_signpost_seg3_collision_0302DD80[];
 
+// cyan_fish
+extern const GeoLayout cyan_fish_geo[];
+extern const Gfx cyan_fish_seg6_dl_0600DD20[];
+extern const Gfx cyan_fish_seg6_dl_0600DDD8[];
+extern const Gfx cyan_fish_seg6_dl_0600DE90[];
+extern const Gfx cyan_fish_seg6_dl_0600DED8[];
+extern const Gfx cyan_fish_seg6_dl_0600DFC0[];
+extern const Gfx cyan_fish_seg6_dl_0600E038[];
+extern const struct Animation *const cyan_fish_seg6_anims_0600E264[];
+
 #endif

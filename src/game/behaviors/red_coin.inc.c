@@ -11,7 +11,7 @@
 static struct ObjectHitbox sRedCoinHitbox = {
     /* interactType:      */ INTERACT_COIN,
     /* downOffset:        */ 0,
-    /* damageOrCoinValue: */ 2,
+    /* damageOrCoinValue: */ 0,
     /* health:            */ 0,
     /* numLootCoins:      */ 0,
     /* radius:            */ 100,
@@ -106,6 +106,7 @@ void bhv_hidden_red_coin_loop(void) {
     switch (o->oAction) {
         case 0:
             // Become invisible and intangible
+            o->parentObj->oHiddenStarTriggerCounter = 0;
             cur_obj_disable_rendering();
             cur_obj_become_intangible();
 
@@ -134,7 +135,7 @@ void bhv_hidden_red_coin_loop(void) {
             cur_obj_become_tangible();
 
             // Delete the coin once collected
-            if (o->oInteractStatus & INT_STATUS_INTERACTED) {
+            if (o->oInteractStatus & INT_STATUS_INTERACTED && o->oAction == 2 ) {
                 // ...and there is a red coin star in the level...
                 if (o->parentObj != NULL) {
                     // ...increment the star's counter.
@@ -166,18 +167,43 @@ void bhv_hidden_red_coin_loop(void) {
                                 gGlobalSoundSource);
                     }
                 spawn_object(o, MODEL_SPARKLES, bhvCoinSparklesSpawner);
-                obj_mark_for_deletion(o);
+                o->oAction = 3;
+                // obj_mark_for_deletion(o);
                 }
             }
 
             // After 200 frames of waiting and 20 2-frame blinks (for 240 frames total),
             // delete the object.
-            if (cur_obj_wait_then_blink(300, 20)) {
-                o->oAction = 0;
-                o->header.gfx.node.flags &= ~GRAPH_RENDER_INVISIBLE;
+            if (gCurrLevelNum == LEVEL_JRB){
+                if (cur_obj_wait_then_blink(600, 20)) {
+                    o->oAction = 0;
+                    o->header.gfx.node.flags &= ~GRAPH_RENDER_INVISIBLE;
+                }
+            } else {
+                if (cur_obj_wait_then_blink(300, 20)) {
+                    o->oAction = 0;
+                    o->header.gfx.node.flags &= ~GRAPH_RENDER_INVISIBLE;
+                }
             }
 
             break;
+
+            case 3:
+            // Become invisible and intangible
+            cur_obj_disable_rendering();
+            cur_obj_become_intangible();
+
+            // Set action to HIDDEN_BLUE_COIN_ACT_WAITING after the blue coin switch is found.
+            o->oHiddenRedCircle = cur_obj_nearest_object_with_behavior(bhvRedRing);
+            if (o->oHiddenRedCircle != NULL){
+                if (o->oHiddenRedCircle->oAction == 0) {
+                    o->oAction = 0;
+                } 
+            } else {
+                mark_obj_for_deletion(o);
+            }
+            break;
+
     }
 
     o->oInteractStatus = INT_STATUS_NONE;

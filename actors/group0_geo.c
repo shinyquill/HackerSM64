@@ -31,3 +31,7 @@
 #include "red_circle/geo.inc.c"
 #include "dragon_coin/geo.inc.c"
 #include "fall_piece_temple/geo.inc.c"
+#include "seaweed/geo.inc.c"
+
+#include "dragon_coin_transparent/geo.inc.c"
+#include "fall_piece_2_temple/geo.inc.c"

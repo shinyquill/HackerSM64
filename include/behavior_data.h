@@ -555,5 +555,10 @@ extern const BehaviorScript bhvHiddenRedCoin[];
 extern const BehaviorScript bhvDragonCoin[];
 extern const BehaviorScript bhvHiddenDragonCoin[];
 extern const BehaviorScript bhvFallingPieceTemple[];
+extern const BehaviorScript bhvTesting[];
+extern const BehaviorScript bhvFlameSpawned[];
+extern const BehaviorScript bhvFallingPiece[];
+extern const BehaviorScript bhvStarSpawnPointRanking[];
+extern const BehaviorScript bhvStarSpawnPointDragonCoin[];
 
 #endif // BEHAVIOR_DATA_H

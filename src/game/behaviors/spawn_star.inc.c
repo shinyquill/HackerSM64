@@ -29,14 +29,36 @@ void bhv_collect_star_init(void) {
     obj_set_hitbox(o, &sCollectStarHitbox);
 }
 
-void bhv_collect_star_loop(void) {
-    o->oFaceAngleYaw += 0x800;
+void bhv_collect_star_cutscene(void){
+    struct Object *spawnPoint = cur_obj_nearest_object_with_behavior(bhvStarSpawnPointDragonCoin);
+    vec3f_copy(&o->oHomeVec, &spawnPoint->oPosVec);
+ 
+    o->oPosY = o->oHomeY; 
+    f32 lateralDist;
+    vec3f_get_lateral_dist(&o->oPosVec, &o->oHomeVec, &lateralDist);
 
-    if (o->oInteractStatus & INT_STATUS_INTERACTED) {
-        obj_mark_for_deletion(o);
-        o->oInteractStatus = INT_STATUS_NONE;
+    o->oForwardVel = lateralDist / 23.0f;
+}
+
+void bhv_collect_star_loop(void) {
+    u8 cutscene = GET_BPARAM2(o->oBehParams);
+
+    if (cutscene == 0){
+        o->oFaceAngleYaw += 0x800;
+        if (o->oInteractStatus & INT_STATUS_INTERACTED) {
+            obj_mark_for_deletion(o);
+            o->oInteractStatus = INT_STATUS_NONE;
+        }
+    } else {
+        if (lateral_dist_between_objects(o, gMarioObject) < 800.f){
+            bhv_spawn_star_cutscene(o->oBehParams);
+            obj_mark_for_deletion(o);
+        } else {
+            o->oFaceAngleYaw += 0x800;
+        }
     }
 }
+
 
 void bhv_star_spawn_init(void) {
     s16 yaw;

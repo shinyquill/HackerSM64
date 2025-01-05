@@ -28,21 +28,23 @@ struct SaveFile {
     // Location of lost cap.
     // Note: the coordinates get set, but are never actually used, since the
     // cap can always be found in a fixed spot within the course
-    u8 capLevel;
     u8 beatenFinalLevel;
+    u8 capLevel;
     u8 capArea;
     // Note: the coordinates get set, but are never actually used, since the
     // cap can always be found in a fixed spot within the course
     Vec3s capPos; // 48 bits
 
     u32 flags;
+    u8 flags2;
 
     // Star flags for each course.
     // The most significant bit of the byte *following* each course is set if the
     // cannon is open.
     u8 courseStars[COURSE_COUNT]; // 200 bits
-
-    u8 courseCoinScores[COURSE_STAGES_COUNT]; // 120 bits
+    u8 dragonCoins[9];
+    u16 courseTimes[3]; // 120 bits
+    u8 courseCoinScores[3]; // 120 bits
 
     struct SaveBlockSignature signature; // 32 bits
 };
@@ -135,6 +137,13 @@ enum SaveProgressFlags {
     SAVE_FLAG_COLLECTED_MIPS_STAR_2  = (1 << 28), /* 0x10000000 */
 };
 
+// game progress flags
+enum ToadProgressFlags {
+    SAVE_FLAG_FILE_EXISTS_2            = (1 <<  0), /* 0x00000001 */
+    SAVE_FLAG_TALKED_TO_TOAD         = (1 <<  1), /* 0x10000000 */
+    SAVE_FLAG_COLLECTED_DRAGON_COIN  = (1 <<  2), /* 0x10000000 */
+};
+
 enum StarFlags {
     STAR_FLAGS_NONE         = (0 << 0), // 0x00
     STAR_FLAG_ACT_1         = (1 << 0), // 0x01
@@ -201,6 +210,12 @@ u32 save_file_get_widescreen_mode(void);
 void save_file_set_widescreen_mode(u8 mode);
 #endif
 void save_file_move_cap_to_default_location(void);
+void save_file_set_dragon_coins(s32 dragonCoinIndex);  
+u8 save_file_get_dragon_coin(s32 dragonCoinIndex);
+u8* save_file_get_course_dragon_coin_score(s32 courseIndex);
+s32 save_file_get_dragon_coins_count(UNUSED s32 fileIndex);
+void save_file_set_dragon_coins_hud(void);
+u16 save_file_get_course_time(s32 fileIndex, s32 courseIndex);
 
 void disable_warp_checkpoint(void);
 void check_if_should_set_warp_checkpoint(struct WarpNode *warpNode);

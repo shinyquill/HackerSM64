@@ -87,3 +87,7 @@ UNUSED static const u64 binid_21 = 21;
 
 #include "tree/model.inc.c"
 UNUSED static const u64 binid_22 = 22;
+
+#include "cyan_fish/model.inc.c"
+#include "cyan_fish/anims/data.inc.c"
+#include "cyan_fish/anims/table.inc.c"

@@ -52,3 +52,37 @@ void bhv_moving_flame_particle_loop(void) {
 
     cur_obj_scale(o->header.gfx.scale[0]);
 }
+
+void spawn_flame(s32 behavior) {
+    Vec3i pos = { 0, 0, 0 };
+    spawn_object_relative(behavior, pos[0], pos[1], pos[2], o,
+                            MODEL_RED_FLAME, bhvFlameSpawned);
+}
+
+void bhv_flame_loop(void) {
+    osSyncPrintf("------------- bhv_flame_loop oAction %d-------------", o->oAction);
+    osSyncPrintf("------------- bhv_flame_loop oDistanceToMario %d-------------", o->oDistanceToMario);
+    osSyncPrintf("------------- bhv_flame_loop oDistanceToMario < COIN_FORMATION_DISTANCE %d-------------", o->oDistanceToMario < COIN_FORMATION_DISTANCE);
+    switch (o->oAction) {
+        case COIN_FORMATION_ACT_INACTIVE:
+            if (o->oDistanceToMario < COIN_FORMATION_DISTANCE) {
+                        spawn_flame(o->oBehParams2ndByte);
+                o->oAction = COIN_FORMATION_ACT_ACTIVE;
+            }
+            break;
+        case COIN_FORMATION_ACT_ACTIVE:
+            if (o->oDistanceToMario > (COIN_FORMATION_DISTANCE + 100.0f)) {
+                o->oAction = COIN_FORMATION_ACT_DEACTIVATE;
+            }
+            break;
+        case COIN_FORMATION_ACT_DEACTIVATE:
+            o->oAction = COIN_FORMATION_ACT_INACTIVE;
+            break;
+    }
+}
+
+void bhv_spawned_flame_loop(void) {
+    if (o->parentObj->oAction == COIN_FORMATION_ACT_DEACTIVATE) {
+        obj_mark_for_deletion(o);
+    }
+}

@@ -1457,7 +1457,7 @@ void update_mario_health(struct MarioState *m) {
             m->healCounter--;
         }
         if (m->hurtCounter > 0) {
-            m->health -= 0x40;
+            // m->health -= 0x40;
             m->hurtCounter--;
         }
 
@@ -1806,6 +1806,8 @@ void init_mario(void) {
     gMarioState->framesSinceB = 0xFF;
 
     gMarioState->invincTimer = 0;
+    osSyncPrintf("------------- init_mario -------------");
+    osSyncPrintf("gMarioState->respawnCheckpoint: %d", gMarioState->respawnCheckpoint);
 
     if (save_file_get_flags()
         & (SAVE_FLAG_CAP_ON_GROUND | SAVE_FLAG_CAP_ON_KLEPTO | SAVE_FLAG_CAP_ON_UKIKI
@@ -1823,6 +1825,11 @@ void init_mario(void) {
 
     gMarioState->capTimer = 0;
     gMarioState->quicksandDepth = 0.0f;
+
+    if (gMarioState->respawnCheckpoint == FALSE){
+        gMarioState->numCoins = 0;
+        gHudDisplay.coins = 0;
+    }
 
     gMarioState->heldObj = NULL;
     gMarioState->riddenObj = NULL;
@@ -1869,9 +1876,14 @@ void init_mario(void) {
         capObject->oForwardVel = 0;
         capObject->oMoveAngleYaw = 0;
     }
+    
+    start_cutscene(gCurrentArea->camera, CUTSCENE_SPAWN);
+    set_camera_mode(gMarioState->area->camera, gMarioState->area->camera->defMode, 1);
 }
 
 void init_mario_from_save_file(void) {
+
+    osSyncPrintf("------------- init_mario_from_save_file -------------");
     gMarioState->playerID = 0;
     gMarioState->flags = MARIO_NONE;
     gMarioState->action = ACT_UNINITIALIZED;

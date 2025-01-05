@@ -399,7 +399,6 @@
 #define MODEL_BUB                         0x64        // cheep_cheep_geo
 #define MODEL_TREASURE_CHEST_BASE         0x65        // treasure_chest_base_geo
 #define MODEL_TREASURE_CHEST_LID          0x66        // treasure_chest_lid_geo
-#define MODEL_CYAN_FISH                   0x67        // cyan_fish_geo
 #define MODEL_WATER_RING                  0x68        // water_ring_geo
 #define MODEL_SKEETER                     0x69        // skeeter_geo
 
@@ -510,7 +509,6 @@
 #define MODEL_KOOPA_SHELL                 0xBE        // koopa_shell_geo
 #define MODEL_KOOPA_WITHOUT_SHELL         0xBF        // koopa_without_shell_geo
 #define MODEL_GOOMBA                      0xC0        // goomba_geo
-#define MODEL_SEAWEED                     0xC1        // seaweed_geo
 #define MODEL_AMP                         0xC2        // dAmpGeo
 #define MODEL_BOBOMB_BUDDY                0xC3        // bobomb_buddy_geo
 // find me
@@ -561,6 +559,10 @@
 #define MODEL_RED_CIRCLE                         0xEC        // invisible_bowser_accessory_geo
 #define MODEL_DRAGON_COIN                        0xED        // invisible_bowser_accessory_geo
 #define MODEL_FALL_PIECE_TEMPLE                       0xF0        // invisible_bowser_accessory_geo
+#define MODEL_SEAWEED                     0xF1        // seaweed_geo
+#define MODEL_DRAGON_COIN_TRANSPARENT                     0xF2        // seaweed_geo
+#define MODEL_FALL_PIECE_2_TEMPLE                       0xF3        // invisible_bowser_accessory_geo
+#define MODEL_CYAN_FISH                   0xF4        // cyan_fish_geo
 
 // Menu Models (overwrites Level Geometry IDs)
 #define MODEL_MAIN_MENU_MARIO_SAVE_BUTTON         MODEL_LEVEL_GEOMETRY_03   // main_menu_geo_0001D0

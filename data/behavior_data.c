@@ -1231,10 +1231,12 @@ const BehaviorScript bhvFlame[] = {
     SET_INT(oIntangibleTimer, 0),
     CALL_NATIVE(bhv_init_room),
     BEGIN_LOOP(),
+        CALL_NATIVE(bhv_spawned_flame_loop),
         SET_INT(oInteractStatus, INT_STATUS_NONE),
         ANIMATE_TEXTURE(oAnimState, 2),
     END_LOOP(),
 };
+
 
 const BehaviorScript bhvRrElevatorPlatform[] = {
     BEGIN(OBJ_LIST_SURFACE),
@@ -6176,7 +6178,8 @@ const BehaviorScript bhvSeesaw[] = {
     OR_INT(oFlags, (OBJ_FLAG_COMPUTE_ANGLE_TO_MARIO | OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_SET_FACE_YAW_TO_MOVE_YAW | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
     LOAD_COLLISION_DATA(seesaw_collision),
     SET_FLOAT(oDrawingDistance, 20000),
-    SET_FLOAT(oCollisionDistance, 5000),
+    SET_FLOAT(oCollisionDistance, 5000),    
+    CALL_NATIVE(bhv_init_room),
     BEGIN_LOOP(),
         CALL_NATIVE(bhv_seesaw_platform_update),
         CALL_NATIVE(load_object_collision_model),
@@ -6188,7 +6191,8 @@ const BehaviorScript bhvSeesaw2[] = {
     OR_INT(oFlags, (OBJ_FLAG_COMPUTE_ANGLE_TO_MARIO | OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_SET_FACE_YAW_TO_MOVE_YAW | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
     LOAD_COLLISION_DATA(seesaw2_collision),
     SET_FLOAT(oDrawingDistance, 20000),
-    SET_FLOAT(oCollisionDistance, 5000),
+    SET_FLOAT(oCollisionDistance, 5000),    
+    CALL_NATIVE(bhv_init_room),
     BEGIN_LOOP(),
         CALL_NATIVE(bhv_seesaw_platform_update),
         CALL_NATIVE(load_object_collision_model),
@@ -6243,7 +6247,9 @@ const BehaviorScript bhvDragonCoin[] = {
     BEGIN(OBJ_LIST_LEVEL),
     OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
     SET_HITBOX(/*Radius*/ 100, /*Height*/ 150),
-    SET_INT(oIntangibleTimer, 0),
+    SET_INT(oIntangibleTimer, 0),    
+    CALL_NATIVE(bhv_init_room),
+    CALL_NATIVE(bhv_dragon_coin_init),
     BEGIN_LOOP(),
         CALL_NATIVE(bhv_dragon_coin_loop),
     END_LOOP(),
@@ -6267,5 +6273,44 @@ const BehaviorScript bhvFallingPieceTemple[] = {
     BEGIN_LOOP(),
         CALL_NATIVE(bhv_falling_piece_temple_loop),
         CALL_NATIVE(load_object_collision_model),
+    END_LOOP(),
+};
+
+const BehaviorScript bhvFallingPiece[] = {
+    BEGIN(OBJ_LIST_SURFACE),
+    OR_INT(oFlags, (OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_SET_FACE_YAW_TO_MOVE_YAW | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    SET_FLOAT(oDrawingDistance, 20000),
+    CALL_NATIVE(bhv_falling_piece_init),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_falling_piece_loop),
+    END_LOOP(),
+};
+
+const BehaviorScript bhvTesting[] = {
+    BEGIN(OBJ_LIST_LEVEL),
+    OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
+    SET_HITBOX(/*Radius*/ 100, /*Height*/ 150),
+    SET_INT(oIntangibleTimer, 0),    
+    CALL_NATIVE(bhv_init_room),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_testing_loop),
+    END_LOOP(),
+};
+
+const BehaviorScript bhvStarSpawnPointRanking[] = {
+    BEGIN(OBJ_LIST_SPAWNER),
+    OR_INT(oFlags, (OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    CALL_NATIVE(bhv_spawning_ranking_star_init),
+    CALL_NATIVE(bhv_init_room),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_spawning_ranking_star_loop),
+    END_LOOP(),
+};
+
+const BehaviorScript bhvStarSpawnPointDragonCoin[] = {
+    BEGIN(OBJ_LIST_SPAWNER),
+    OR_INT(oFlags, (OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    CALL_NATIVE(bhv_init_room),
+    BEGIN_LOOP(),
     END_LOOP(),
 };

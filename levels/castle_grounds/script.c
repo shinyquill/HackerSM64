@@ -64,7 +64,7 @@ const LevelScript level_castle_grounds_entry[] = {
 		OBJECT(MODEL_LUIGI, -686, 5, 1473, 0, -94, 0, (DIALOG_000 << 16), bhvLuigiNPC),
 		OBJECT(MODEL_TOAD, -1522, 5, 1457, 0, 84, 0, (DIALOG_001 << 24), bhvToadMessage),
 		OBJECT(MODEL_TOAD, -3067, 333, 6229, 0, -113, 0, (DIALOG_004 << 24), bhvToadMessage),
-		OBJECT(MODEL_NONE, 77, 163, -3495, 0, 180, 0, (0x01 << 16), bhvWarp),
+		OBJECT(MODEL_NONE, 80, -20, -3732, 0, 180, 0, (0x01 << 16), bhvWarp),
 		OBJECT(MODEL_NONE, 1544, 305, 4482, 0, -119, 0, 0x000A0000, bhvInstantActiveWarp),
 		MARIO_POS(0x01, -119, 1544, 305, 4482),
 		OBJECT(MODEL_NONE, 2031, 360, 4445, 0, 0, 0, (0x02 << 16), bhvWarp),

@@ -28,6 +28,10 @@ enum PrintfGlyphs {
     GLYPH_APOSTROPHE      = 56,
     GLYPH_DOUBLE_QUOTE    = 57,
     GLYPH_UMLAUT          = 58,
+    GLYPH_DRAGON_COIN     = 59,
+    GLYPH_DRAGON_COIN_EMPTY = 60,
+    GLYPH_DRAGON_COIN_WHITE     = 61,
+    GLYPH_DRAGON_COIN_WHITE_EMPTY = 62,
 };
 
 void print_text_fmt_int(s32 x, s32 y, const char *str, s32 n);

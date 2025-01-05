@@ -138,6 +138,7 @@ unsigned char textMarioD[] = { TEXT_FILE_MARIO_D };
 
 unsigned char textNew[] = { TEXT_NEW };
 unsigned char starIcon[] = { GLYPH_STAR, GLYPH_SPACE };
+unsigned char dragonCoinIcon[] = { GLYPH_DRAGON_COIN, GLYPH_SPACE };
 unsigned char xIcon[] = { GLYPH_MULTIPLY, GLYPH_SPACE };
 
 unsigned char textSelectFile[] = { TEXT_SELECT_FILE };
@@ -612,10 +613,6 @@ void copy_action_file_button(struct Object *copyButton, s32 copyFileButtonID) {
                 sFadeOutText = TRUE;
                 sMainMenuTimer = 0;
                 save_file_copy(sSelectedFileIndex, copyFileButtonID - MENU_BUTTON_COPY_MIN);
-                sMainMenuButtons[copyFileButtonID]->header.gfx.sharedChild =
-                    gLoadedGraphNodes[MODEL_MAIN_MENU_MARIO_SAVE_BUTTON_FADE];
-                sMainMenuButtons[copyFileButtonID - MENU_BUTTON_COPY_MIN]->header.gfx.sharedChild =
-                    gLoadedGraphNodes[MODEL_MAIN_MENU_MARIO_SAVE_BUTTON_FADE];
             } else {
                 // If clicked in a existing save file, play buzz sound
                 if (MENU_BUTTON_COPY_FILE_A + sSelectedFileIndex == copyFileButtonID) {
@@ -1308,6 +1305,20 @@ void print_generic_string_fade(s16 x, s16 y, const unsigned char *text) {
 }
 
 /**
+ * Prints a generic white string with text fade properties and a shadow.
+ */
+void print_generic_string_fade_shadow(s16 x, s16 y, const unsigned char *text) {
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
+    gDPSetEnvColor(gDisplayListHead++, 0, 0, 0, sTextBaseAlpha - sTextFadeAlpha);
+    print_generic_string(x - 1, y - 1, text);
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
+    gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha - sTextFadeAlpha);
+    print_generic_string(x, y, text);
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
+}
+
+/**
  * Updates text fade at the top of a menu.
  */
 s32 update_text_fade_out(void) {
@@ -1331,6 +1342,7 @@ s32 update_text_fade_out(void) {
  */
 void print_save_file_star_count(s8 fileIndex, s16 x, s16 y) {
     u8 starCountText[4];
+    u8 dragonCoinCountText[4];
     u8 checkpointCountText[4];
     s8 offset = 0;
 
@@ -1338,21 +1350,27 @@ void print_save_file_star_count(s8 fileIndex, s16 x, s16 y) {
         s16 starCount = save_file_get_total_star_count(fileIndex,
                                                        COURSE_NUM_TO_INDEX(COURSE_BOB),
                                                        COURSE_NUM_TO_INDEX(COURSE_BOB));
+        s16 dragonCoinCount = save_file_get_dragon_coins_count(fileIndex);
         // Print star icon
         // If star count is less than 100, print x icon and move
         // the star count text one digit to the right.
-        if (starCount < 1) {
-            print_hud_lut_string(HUD_LUT_GLOBAL, x + 16, y, xIcon);
+        print_hud_lut_string(HUD_LUT_GLOBAL, x, y, starIcon);
+        print_hud_lut_string(HUD_LUT_GLOBAL, x + 16, y, xIcon);
+        offset = 14;
+        int_to_str(starCount, starCountText);
+        print_hud_lut_string(HUD_LUT_GLOBAL, x + offset + 16, y, starCountText);
+
+        print_hud_lut_string(HUD_LUT_GLOBAL, x + 46, y, dragonCoinIcon);
+        print_hud_lut_string(HUD_LUT_GLOBAL, x + 46 + 16, y, xIcon);
+        int_to_str(dragonCoinCount, dragonCoinCountText);
+        print_hud_lut_string(HUD_LUT_GLOBAL, x + 46 + offset + 16, y, dragonCoinCountText);
             // int_to_str(checkpoints, checkpointCountText);
             // print_hud_lut_string(HUD_LUT_GLOBAL, x + offset + 16, y, checkpointCountText);
             // offset = 16;
-        } else {
-            print_hud_lut_string(HUD_LUT_GLOBAL, x, y, starIcon);
+        // } else {
 
-        }
+        // }
         // Print star count
-        // int_to_str(starCount, starCountText);
-        // print_hud_lut_string(HUD_LUT_GLOBAL, x + offset + 16, y, starCountText);
     } else {
         // Print "new" text
         print_hud_lut_string(HUD_LUT_GLOBAL, x, y, LANGUAGE_ARRAY(textNew));
@@ -1591,10 +1609,6 @@ void print_erase_menu_prompt(s16 x, s16 y) {
             sFadeOutText = TRUE;
             sMainMenuTimer = 0;
             save_file_erase(sSelectedFileIndex);
-            sMainMenuButtons[MENU_BUTTON_ERASE_MIN + sSelectedFileIndex]->header.gfx.sharedChild =
-                gLoadedGraphNodes[MODEL_MAIN_MENU_MARIO_NEW_BUTTON_FADE];
-            sMainMenuButtons[sSelectedFileIndex]->header.gfx.sharedChild =
-                gLoadedGraphNodes[MODEL_MAIN_MENU_MARIO_NEW_BUTTON_FADE];
             sEraseYesNoHoverState = MENU_ERASE_HOVER_NONE;
             // ..and is hovering "NO", return back to main phase
         } else if (sEraseYesNoHoverState == MENU_ERASE_HOVER_NO) {
@@ -1610,6 +1624,12 @@ void print_erase_menu_prompt(s16 x, s16 y) {
         eraseFilePressed = FALSE;
     }
             // Print "YES NO" strings
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
+    gDPSetEnvColor(gDisplayListHead++, 0, 0, 0, sTextBaseAlpha);
+    print_generic_string(x + 55, y - 1, LANGUAGE_ARRAY(textYes));
+    gDPSetEnvColor(gDisplayListHead++, 0, 0, 0, sTextBaseAlpha);
+    print_generic_string(x + 97, y - 1, LANGUAGE_ARRAY(textNo));
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
     gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
     gDPSetEnvColor(gDisplayListHead++, sYesNoColor[0], sYesNoColor[0], sYesNoColor[0], sTextBaseAlpha);
     print_generic_string(x + 56, y, LANGUAGE_ARRAY(textYes));
@@ -1643,18 +1663,18 @@ void erase_menu_display_message(s8 messageID) {
             print_hud_lut_string_fade(HUD_LUT_DIFF, ERASE_FILE_X, 35, LANGUAGE_ARRAY(textEraseFile));
             break;
         case ERASE_MSG_PROMPT:
-            print_generic_string_fade(90, 190, LANGUAGE_ARRAY(textSure));
+            print_generic_string_fade_shadow(90, 190, LANGUAGE_ARRAY(textSure));
             print_erase_menu_prompt(90, 190); // YES NO, has functions for it too
             break;
         case ERASE_MSG_NOSAVE_EXISTS:
-            print_generic_string_fade(NOSAVE_DATA_X3, 190, LANGUAGE_ARRAY(textNoSavedDataExists));
+            print_generic_string_fade_shadow(NOSAVE_DATA_X3, 190, LANGUAGE_ARRAY(textNoSavedDataExists));
             break;
         case ERASE_MSG_MARIO_ERASED:
             LANGUAGE_ARRAY(textMarioAJustErased)[MARIO_ERASED_VAR] = sSelectedFileIndex + 10;
-            print_generic_string_fade(MARIO_ERASED_X, 190, LANGUAGE_ARRAY(textMarioAJustErased));
+            print_generic_string_fade_shadow(MARIO_ERASED_X, 190, LANGUAGE_ARRAY(textMarioAJustErased));
             break;
         case ERASE_MSG_SAVE_EXISTS: // unused
-            print_generic_string_fade(SAVE_EXISTS_X2, 190, LANGUAGE_ARRAY(textSavedDataExists));
+            print_generic_string_fade_shadow(SAVE_EXISTS_X2, 190, LANGUAGE_ARRAY(textSavedDataExists));
             break;
     }
 }
@@ -1712,6 +1732,7 @@ void print_main_menu_strings(void) {
     create_dl_ortho_matrix();
     s8 index, indexOption;
     render_file_select(&index, &indexOption, pressed);
+
     if (gPlayer1Controller->buttonPressed & (A_BUTTON | B_BUTTON | START_BUTTON) && !pressed) {
         switch (index){
             case 0: 
@@ -2102,6 +2123,15 @@ s32 lvl_init_menu_values_and_cursor_pos(UNUSED s32 arg, UNUSED s32 unused) {
     sSoundMode = save_file_get_sound_mode();
     gCurrLevelNum = LEVEL_UNKNOWN_1;
     return 0;
+}
+
+s32 lvl_start_being_beaten(UNUSED s32 arg, UNUSED s32 unused) {
+    // osSyncPrintf("exists: %d",save_file_exists(sSelectedFileNum));
+    // osSyncPrintf("beaten: %d",save_file_get_beaten_fileindex(sSelectedFileNum));
+    if (save_file_get_beaten_fileindex(sSelectedFileNum)){
+        return LEVEL_CASTLE;
+    }
+    return LEVEL_CASTLE_GROUNDS;
 }
 
 /**

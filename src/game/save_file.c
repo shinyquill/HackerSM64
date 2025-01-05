@@ -467,11 +467,11 @@ void save_file_collect_star_or_key(s16 coinScore, s16 starIndex) {
         }
 
         if (coinScore > save_file_get_course_coin_score(fileIndex, courseIndex)) {
-            gSaveBuffer.files[fileIndex][0].courseCoinScores[courseIndex] = coinScore;
-            touch_coin_score_age(fileIndex, courseIndex);
+            // gSaveBuffer.files[fileIndex][0].courseCoinScores[courseIndex] = coinScore;
+            // touch_coin_score_age(fileIndex, courseIndex);
 
-            gGotFileCoinHiScore = TRUE;
-            gSaveFileModified = TRUE;
+            // gGotFileCoinHiScore = TRUE;
+            // gSaveFileModified = TRUE;
         }
     }
 
@@ -505,15 +505,24 @@ void save_file_collect_star_or_key(s16 coinScore, s16 starIndex) {
     }
 }
 
-void save_file_finish_race(s16 coinScore, s16 timer) {
+void save_file_finish_race(u16 coinScore, u16 timer) {
+    struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1][0];
     s32 fileIndex = gCurrSaveFileNum - 1;
     s32 courseIndex = COURSE_NUM_TO_INDEX(gCurrCourseNum);
+    osSyncPrintf("------------- coinScore: %d ------------", coinScore);    
+    osSyncPrintf("------------- timer: %d ------------", timer);     
+    u16 filesave_timer = saveFile->courseTimes[courseIndex] == 0 ? 9999 : saveFile->courseTimes[courseIndex];
+    osSyncPrintf("------------- filesave_timer: %d ------------", filesave_timer);     
+    if (filesave_timer > timer && courseIndex < 3){
+        saveFile->courseTimes[courseIndex] = timer;
+        gSaveFileModified = TRUE;
+    }
 
-    // s16 filesave_timer = gSaveBuffer.files[fileIndex][0].courseTimer[courseIndex];
-    // if (filesave_timer > timer){
-    //     gSaveBuffer.files[fileIndex][0].courseTimer[courseIndex] = timer;
-    //     gSaveFileModified = TRUE;
-    // }
+    u16 filesave_coins = saveFile->courseCoinScores[courseIndex];
+    if (filesave_coins < coinScore && courseIndex < 3){
+        saveFile->courseCoinScores[courseIndex] = coinScore;
+        gSaveFileModified = TRUE;
+    }
 }
 
 
@@ -585,6 +594,11 @@ void save_file_set_flags(u32 flags) {
     gSaveFileModified = TRUE;
 }
 
+void save_file_set_flags_2(u32 flags) {
+    gSaveBuffer.files[gCurrSaveFileNum - 1][0].flags2 |= (flags | SAVE_FLAG_FILE_EXISTS_2);
+    gSaveFileModified = TRUE;
+}
+
 void save_file_clear_flags(u32 flags) {
     gSaveBuffer.files[gCurrSaveFileNum - 1][0].flags &= ~flags;
     gSaveBuffer.files[gCurrSaveFileNum - 1][0].flags |= SAVE_FLAG_FILE_EXISTS;
@@ -612,12 +626,27 @@ u32 save_file_get_flags(void) {
             SAVE_FLAG_COLLECTED_TOAD_STAR_2  |
             SAVE_FLAG_COLLECTED_TOAD_STAR_3  |
             SAVE_FLAG_COLLECTED_MIPS_STAR_1  |
-            SAVE_FLAG_COLLECTED_MIPS_STAR_2);
+            SAVE_FLAG_COLLECTED_MIPS_STAR_2  |
+            SAVE_FLAG_TALKED_TO_TOAD         |
+            SAVE_FLAG_COLLECTED_DRAGON_COIN);
 #else
     if (gCurrCreditsEntry != NULL || gCurrDemoInput != NULL) {
         return 0;
     }
     return gSaveBuffer.files[gCurrSaveFileNum - 1][0].flags;
+#endif
+}
+
+u8 save_file_get_flags_2(void) {
+#ifdef COMPLETE_SAVE_FILE
+    return (SAVE_FLAG_FILE_EXISTS_2            |
+            SAVE_FLAG_TALKED_TO_TOAD          |
+            SAVE_FLAG_COLLECTED_DRAGON_COIN);
+#else
+    if (gCurrCreditsEntry != NULL || gCurrDemoInput != NULL) {
+        return 0;
+    }
+    return gSaveBuffer.files[gCurrSaveFileNum - 1][0].flags2;
 #endif
 }
 
@@ -647,6 +676,86 @@ u32 save_file_get_star_flags(s32 fileIndex, s32 courseIndex) {
  * Add to the bitset of obtained stars in the specified course.
  * If course is COURSE_NONE, add to the bitset of obtained castle secret stars.
  */
+void save_file_set_dragon_coin(s32 dragonCoinIndex) {
+    struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1][0];
+    saveFile->dragonCoins[dragonCoinIndex] = TRUE;
+    gHudDisplay.dragonCoins[dragonCoinIndex] = TRUE;
+    saveFile->flags |= SAVE_FLAG_FILE_EXISTS;
+    gSaveFileModified = TRUE;
+}
+
+void save_file_set_dragon_coins_hud(void) {
+    struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1][0];
+    osSyncPrintf("------------- save_file_set_dragon_coins_hud -------------");
+    if (saveFile->dragonCoins[0] || saveFile->dragonCoins[3] || saveFile->dragonCoins[6] ){
+        gHudDisplay.dragonCoins[0] = TRUE;
+    } else {
+        gHudDisplay.dragonCoins[0] = FALSE;
+    }
+    if (saveFile->dragonCoins[1] || saveFile->dragonCoins[4] || saveFile->dragonCoins[7] ){
+        gHudDisplay.dragonCoins[1] = TRUE;
+    } else {
+        gHudDisplay.dragonCoins[1] = FALSE;
+    }
+    if (saveFile->dragonCoins[2] || saveFile->dragonCoins[5] || saveFile->dragonCoins[8] ){
+        gHudDisplay.dragonCoins[2] = TRUE;
+    } else {
+        gHudDisplay.dragonCoins[2] = FALSE;
+    }
+}
+
+u8 save_file_get_dragon_coin(s32 dragonCoinIndex) {
+    // osSyncPrintf("------------- save_file_get_dragon_coin -------------");
+    // osSyncPrintf("------------- dragonCoinIndex %X -------------", dragonCoinIndex);
+    struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1][0];
+    // osSyncPrintf("------------- saveFile->dragonCoins[dragonCoinIndex] %X -------------", saveFile->dragonCoins[dragonCoinIndex]);
+    return saveFile->dragonCoins[dragonCoinIndex];
+}
+
+
+u8* save_file_get_course_dragon_coin_score(s32 courseIndex) {
+    static u8 dragonCoins[3];
+    switch(courseIndex){
+        case 0: {
+            dragonCoins[0] = save_file_get_dragon_coin(0);
+            dragonCoins[1] = save_file_get_dragon_coin(1);
+            dragonCoins[2] = save_file_get_dragon_coin(2);
+            break;
+        }
+        case 1: {
+            dragonCoins[0] = save_file_get_dragon_coin(3);
+            dragonCoins[1] = save_file_get_dragon_coin(4);
+            dragonCoins[2] = save_file_get_dragon_coin(5);
+            break;
+        }
+        case 2: {
+            dragonCoins[0] = save_file_get_dragon_coin(6);
+            dragonCoins[1] = save_file_get_dragon_coin(7);
+            dragonCoins[2] = save_file_get_dragon_coin(8);
+            break;
+        }
+    }
+    return dragonCoins;
+}
+
+s32 save_file_get_dragon_coins_count(UNUSED s32 fileIndex) {    
+    struct SaveFile *saveFile = &gSaveBuffer.files[fileIndex][0];
+    s32 length = sizeof(saveFile->dragonCoins) / sizeof(saveFile->dragonCoins[0]);
+    s32 i;
+    s32 count = 0;
+    for (i = 0; i < length; i++) {
+        if (saveFile->dragonCoins[i] == 1){
+            count++;
+        }
+    }
+    
+    return count;
+}
+
+/**
+ * Add to the bitset of obtained stars in the specified course.
+ * If course is COURSE_NONE, add to the bitset of obtained castle secret stars.
+ */
 void save_file_set_star_flags(s32 fileIndex, s32 courseIndex, u32 starFlags) {
     if (courseIndex == COURSE_NUM_TO_INDEX(COURSE_NONE)) {
         gSaveBuffer.files[fileIndex][0].flags |= STAR_FLAG_TO_SAVE_FLAG(starFlags);
@@ -667,6 +776,10 @@ s32 save_file_get_course_coin_score(s32 fileIndex, s32 courseIndex) {
     return gSaveBuffer.files[fileIndex][0].courseCoinScores[courseIndex];
 }
 #endif
+
+u16 save_file_get_course_time(s32 fileIndex, s32 courseIndex) {
+    return courseIndex < 3 ? gSaveBuffer.files[fileIndex][0].courseTimes[courseIndex] : 0; 
+}
 
 /**
  * Return TRUE if the cannon is unlocked in the current course.
@@ -704,13 +817,14 @@ void save_file_set_beaten(void) {
     gSaveFileModified = TRUE;
 }
 
-void save_file_get_beaten(void) {
+u8 save_file_get_beaten(void) {
     struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1][0];
+    return saveFile->beatenFinalLevel;
+}
 
-    if (saveFile->beatenFinalLevel) {
-        return TRUE;
-    }
-    return FALSE;
+u8 save_file_get_beaten_fileindex(s32 fileIndex) {
+    struct SaveFile *saveFile = &gSaveBuffer.files[fileIndex-1][0];
+    return saveFile->beatenFinalLevel;
 }
 
 s32 save_file_get_cap_pos(Vec3s capPos) {

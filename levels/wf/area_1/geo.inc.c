@@ -17,7 +17,8 @@ const GeoLayout wf_dl_1_Cave_geo[] = {
 	GEO_NODE_START(),
 	GEO_OPEN_NODE(),
 		GEO_DISPLAY_LIST(LAYER_OPAQUE, wf_dl_Level_006_mesh_layer_1),
-		GEO_DISPLAY_LIST(LAYER_OPAQUE, wf_dl_No_Collision_004_mesh_layer_1),
+		GEO_DISPLAY_LIST(LAYER_OPAQUE, wf_dl_No_collision_mesh_layer_1),
+		GEO_TRANSLATE_ROTATE_WITH_DL(LAYER_TRANSPARENT, 14159, 10022, -2566, 0, 149, 0, wf_dl_Sandfall_009_mesh_layer_5),
 	GEO_CLOSE_NODE(),
 	GEO_RETURN(),
 };
@@ -26,14 +27,15 @@ const GeoLayout wf_dl_2_Sand_geo[] = {
 	GEO_OPEN_NODE(),
 		GEO_DISPLAY_LIST(LAYER_OPAQUE, wf_dl_Level_007_mesh_layer_1),
 		GEO_DISPLAY_LIST(LAYER_OPAQUE, wf_dl_No_Collision_005_mesh_layer_1),
+		GEO_TRANSLATE_ROTATE_WITH_DL(LAYER_TRANSPARENT, 14159, 10022, -2566, 0, 149, 0, wf_dl_Sandfall_001_mesh_layer_5),
 	GEO_CLOSE_NODE(),
 	GEO_RETURN(),
 };
 const GeoLayout wf_dl_3_Water_geo[] = {
 	GEO_NODE_START(),
 	GEO_OPEN_NODE(),
-		GEO_DISPLAY_LIST(LAYER_OPAQUE, wf_dl_Level_mesh_layer_1),
-		GEO_DISPLAY_LIST(LAYER_TRANSPARENT, wf_dl_Level_mesh_layer_5),
+		GEO_DISPLAY_LIST(LAYER_OPAQUE, wf_dl_Level_005_mesh_layer_1),
+		GEO_DISPLAY_LIST(LAYER_TRANSPARENT, wf_dl_Level_005_mesh_layer_5),
 		GEO_DISPLAY_LIST(LAYER_OPAQUE, wf_dl_No_Collision_006_mesh_layer_1),
 		GEO_TRANSLATE_ROTATE_WITH_DL(LAYER_TRANSPARENT, -10167, 10082, 14637, 90, 0, -90, wf_dl_Wat_mesh_layer_5),
 		GEO_TRANSLATE_NODE_WITH_DL(LAYER_TRANSPARENT, -11812, -9181, -10829, wf_dl_Waterfall_003_mesh_layer_5),
@@ -43,7 +45,7 @@ const GeoLayout wf_dl_3_Water_geo[] = {
 const GeoLayout wf_dl_4_Lava_geo[] = {
 	GEO_NODE_START(),
 	GEO_OPEN_NODE(),
-		GEO_DISPLAY_LIST(LAYER_OPAQUE, wf_dl_Level_005_mesh_layer_1),
+		GEO_DISPLAY_LIST(LAYER_OPAQUE, wf_dl_Level_010_mesh_layer_1),
 		GEO_DISPLAY_LIST(LAYER_OPAQUE, wf_dl_No_Collision_007_mesh_layer_1),
 	GEO_CLOSE_NODE(),
 	GEO_RETURN(),

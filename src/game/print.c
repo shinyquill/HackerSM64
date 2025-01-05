@@ -356,6 +356,22 @@ s32 char_to_glyph_index(char c) {
         return GLYPH_BETA_KEY; // beta key, JP only. Reused for Ü in EU.
     }
 
+    if (c == '(') {
+        return GLYPH_DRAGON_COIN; // beta key, JP only. Reused for Ü in EU.
+    }
+
+    if (c == ')') {
+        return GLYPH_DRAGON_COIN_EMPTY; // beta key, JP only. Reused for Ü in EU.
+    }
+
+    if (c == '[') {
+        return GLYPH_DRAGON_COIN_WHITE; // beta key, JP only. Reused for Ü in EU.
+    }
+
+    if (c == ']') {
+        return GLYPH_DRAGON_COIN_WHITE_EMPTY; // beta key, JP only. Reused for Ü in EU.
+    }
+
     return GLYPH_SPACE;
 }
 

@@ -15,6 +15,7 @@ const GeoLayout hub_geo[] = {
 						GEO_DISPLAY_LIST(LAYER_TRANSPARENT, hub_000_displaylist_mesh_layer_5),
 						GEO_DISPLAY_LIST(LAYER_OPAQUE, hub_000_displaylist_mesh_layer_1),
 						GEO_DISPLAY_LIST(LAYER_ALPHA, hub_000_displaylist_mesh_layer_4),
+						GEO_DISPLAY_LIST(LAYER_TRANSPARENT_DECAL, hub_000_displaylist_mesh_layer_6),
 					GEO_CLOSE_NODE(),
 				GEO_CLOSE_NODE(),
 			GEO_CLOSE_NODE(),

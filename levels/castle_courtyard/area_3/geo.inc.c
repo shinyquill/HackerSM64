@@ -3,6 +3,7 @@
 const GeoLayout castle_courtyard_area_3_geo[] = {
 	GEO_NODE_START(),
 	GEO_OPEN_NODE(),
+		GEO_TRANSLATE_NODE_WITH_DL(LAYER_OPAQUE, -61, 5, -19, castle_courtyard_dl_No_collision_001_mesh_layer_1),
 		GEO_TRANSLATE_NODE_WITH_DL(LAYER_OPAQUE, -61, 5, -3081, castle_courtyard_dl_Plane_006_mesh_layer_1),
 	GEO_CLOSE_NODE(),
 	GEO_RETURN(),
